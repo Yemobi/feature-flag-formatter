@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Flag ID Formatter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Feature Flag ID Formatter</h1>
+            <p>Streamline your feature flagging process with smart ID formatting</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Input Section -->
+            <div class="section input-section">
+                <h2>Input IDs</h2>
+                <textarea 
+                    id="inputArea" 
+                    placeholder="Paste your account IDs here (one per line or comma-separated)...&#10;&#10;Example:&#10;xx_xxxxid1&#10;xx_xxxxid2&#10;xx_xxxxid3"
+                ></textarea>
+                
+                <div class="categorization-panel">
+                    <h3>ID Categorization (Optional)</h3>
+                    <p class="help-text">Mark IDs for specific feature flags by adding tags after each ID</p>
+                    <div class="tags-guide">
+                        <span class="tag-example sustainability">-S or -Sustainability</span>
+                        <span class="tag-example viewability">-V or -Viewability</span>
+                        <span class="tag-example both">-B or -Both</span>
+                        <span class="tag-example third-party">-TP or -ThirdParty</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls Section -->
+            <div class="section controls-section">
+                <h2>Formatting Options</h2>
+                
+                <div class="control-group">
+                    <label>Feature Flag Type</label>
+                    <div class="button-group">
+                        <button class="btn btn-flag active" data-flag="sustainability">Sustainability</button>
+                        <button class="btn btn-flag" data-flag="viewability">Viewability</button>
+                        <button class="btn btn-flag" data-flag="both">Both</button>
+                        <button class="btn btn-flag" data-flag="third-party">Third Party</button>
+                        <button class="btn btn-flag" data-flag="custom">Custom</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Quote Style</label>
+                    <div class="button-group">
+                        <button class="btn btn-quote active" data-quote="double">Double "ID"</button>
+                        <button class="btn btn-quote" data-quote="single">Single 'ID'</button>
+                        <button class="btn btn-quote" data-quote="none">None</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Delimiter</label>
+                    <div class="button-group">
+                        <button class="btn btn-delim active" data-delim="comma-space">Comma + Space</button>
+                        <button class="btn btn-delim" data-delim="comma">Comma</button>
+                        <button class="btn btn-delim" data-delim="newline">New Line</button>
+                        <button class="btn btn-delim" data-delim="space">Space</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Case Conversion</label>
+                    <div class="button-group">
+                        <button class="btn btn-case active" data-case="none">Keep Original</button>
+                        <button class="btn btn-case" data-case="upper">UPPERCASE</button>
+                        <button class="btn btn-case" data-case="lower">lowercase</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="removeDuplicates" checked>
+                        Remove Duplicates
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="sortAlphabetically">
+                        Sort Alphabetically
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="addTrailingComma">
+                        Add Trailing Comma
+                    </label>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="formatBtn">Format IDs</button>
+                    <button class="btn btn-secondary" id="clearBtn">Clear All</button>
+                </div>
+            </div>
+
+            <!-- Output Section -->
+            <div class="section output-section">
+                <h2>Formatted Output</h2>
+                <div class="output-tabs">
+                    <button class="tab-btn active" data-tab="all">All</button>
+                    <button class="tab-btn" data-tab="sustainability">Sustainability</button>
+                    <button class="tab-btn" data-tab="viewability">Viewability</button>
+                    <button class="tab-btn" data-tab="both">Both</button>
+                    <button class="tab-btn" data-tab="third-party">Third Party</button>
+                </div>
+                
+                <div class="output-container">
+                    <textarea 
+                        id="outputArea" 
+                        readonly
+                        placeholder="Your formatted IDs will appear here..."
+                    ></textarea>
+                </div>
+
+                <div class="output-actions">
+                    <button class="btn btn-success" id="copyBtn">
+                        <span class="icon">📋</span> Copy to Clipboard
+                    </button>
+                    <span class="stats" id="statsText"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Examples -->
+        <div class="examples-section">
+            <h3>Quick Examples</h3>
+            <div class="examples-grid">
+                <div class="example-card">
+                    <h4>Example 1: Mixed Categories</h4>
+                    <pre>xx_xxxxid1 -S
+xx_xxxxid2 -V
+xx_xxxxid3 -B</pre>
+                    <button class="btn btn-small load-example" data-example="1">Load Example</button>
+                </div>
+                <div class="example-card">
+                    <h4>Example 2: Third Party</h4>
+                    <pre>tp_XXX1
+tp_XXX2
+tp_XXX3</pre>
+                    <button class="btn btn-small load-example" data-example="2">Load Example</button>
+                </div>
+                <div class="example-card">
+                    <h4>Example 3: Simple List</h4>
+                    <pre>account_001, account_002, account_003</pre>
+                    <button class="btn btn-small load-example" data-example="3">Load Example</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

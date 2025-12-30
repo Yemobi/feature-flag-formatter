@@ -261,6 +261,50 @@ header p {
 }
 
 /* Output Section */
+.output-mode-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.mode-tab-btn {
+    padding: 1rem 1.5rem;
+    border: none;
+    background: transparent;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.mode-tab-btn:hover {
+    color: var(--primary-color);
+    background: var(--bg-color);
+}
+
+.mode-tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.output-view {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.duplicates-info {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #fef3c7;
+    border-radius: 8px;
+    border-left: 4px solid var(--warning-color);
+}
+
 .output-tabs {
     display: flex;
     gap: 0.5rem;

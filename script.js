@@ -14,24 +14,39 @@ const state = {
         'third-party': [],
         uncategorized: []
     },
-    currentTab: 'all'
+    currentTab: 'all',
+    outputMode: 'formatted' // 'formatted' or 'duplicates'
 };
 
 // DOM elements
 const elements = {
     inputArea: document.getElementById('inputArea'),
     outputArea: document.getElementById('outputArea'),
+    duplicatesArea: document.getElementById('duplicatesArea'),
     formatBtn: document.getElementById('formatBtn'),
     clearBtn: document.getElementById('clearBtn'),
     copyBtn: document.getElementById('copyBtn'),
+    copyDuplicatesBtn: document.getElementById('copyDuplicatesBtn'),
     statsText: document.getElementById('statsText'),
+    duplicatesStatsText: document.getElementById('duplicatesStatsText'),
     removeDuplicates: document.getElementById('removeDuplicates'),
     sortAlphabetically: document.getElementById('sortAlphabetically'),
-    addTrailingComma: document.getElementById('addTrailingComma')
+    addTrailingComma: document.getElementById('addTrailingComma'),
+    formattedView: document.getElementById('formattedView'),
+    duplicatesView: document.getElementById('duplicatesView')
 };
 
 // Initialize event listeners
 function init() {
+    // Output mode tabs (Formatted vs Duplicates)
+    document.querySelectorAll('.mode-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            setActiveButton(btn, '.mode-tab-btn');
+            state.outputMode = btn.dataset.mode;
+            toggleOutputView();
+        });
+    });
+
     // Button groups
     document.querySelectorAll('.btn-flag').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -94,6 +109,7 @@ function init() {
     elements.formatBtn.addEventListener('click', formatAndDisplay);
     elements.clearBtn.addEventListener('click', clearAll);
     elements.copyBtn.addEventListener('click', copyToClipboard);
+    elements.copyDuplicatesBtn.addEventListener('click', copyDuplicatesToClipboard);
 
     // Input area auto-format
     elements.inputArea.addEventListener('input', debounce(formatAndDisplay, 500));
@@ -221,13 +237,33 @@ function formatAndDisplay() {
     
     if (!input) {
         elements.outputArea.value = '';
+        elements.duplicatesArea.value = '';
         elements.statsText.textContent = '';
+        elements.duplicatesStatsText.textContent = '';
         return;
     }
 
     // Parse and categorize
     state.categorizedIds = parseInput(input);
 
+    // Update both views
+    updateFormattedOutput();
+    updateDuplicatesOutput();
+}
+
+// Toggle between formatted and duplicates view
+function toggleOutputView() {
+    if (state.outputMode === 'formatted') {
+        elements.formattedView.style.display = 'block';
+        elements.duplicatesView.style.display = 'none';
+    } else {
+        elements.formattedView.style.display = 'none';
+        elements.duplicatesView.style.display = 'block';
+    }
+}
+
+// Update formatted output
+function updateFormattedOutput() {
     let outputText = '';
     let totalCount = 0;
 
@@ -275,6 +311,62 @@ function formatAndDisplay() {
     elements.statsText.textContent = stats.join(' • ');
 }
 
+// Update duplicates output
+function updateDuplicatesOutput() {
+    const input = elements.inputArea.value.trim();
+    
+    if (!input) {
+        elements.duplicatesArea.value = '';
+        elements.duplicatesStatsText.textContent = '';
+        return;
+    }
+
+    // Get all IDs without categories
+    const allIds = [];
+    const lines = input.split(/[\n,]+/).map(line => line.trim()).filter(line => line);
+
+    lines.forEach(line => {
+        // Remove category tags to get clean ID
+        const cleanId = line.replace(/\s*-\s*(S|V|B|TP|Sustainability|Viewability|Both|ThirdParty|Third-Party)$/i, '').trim();
+        if (cleanId) {
+            allIds.push(cleanId);
+        }
+    });
+
+    // Find duplicates
+    const idCount = {};
+    const duplicates = {};
+
+    allIds.forEach(id => {
+        idCount[id] = (idCount[id] || 0) + 1;
+    });
+
+    Object.keys(idCount).forEach(id => {
+        if (idCount[id] > 1) {
+            duplicates[id] = idCount[id];
+        }
+    });
+
+    // Format output
+    const duplicateKeys = Object.keys(duplicates);
+    
+    if (duplicateKeys.length === 0) {
+        elements.duplicatesArea.value = '✓ No duplicates found!\n\nAll IDs are unique.';
+        elements.duplicatesStatsText.textContent = '0 duplicates';
+        elements.duplicatesStatsText.style.color = 'var(--success-color)';
+    } else {
+        let duplicatesText = `Found ${duplicateKeys.length} duplicate ID${duplicateKeys.length !== 1 ? 's' : ''}:\n\n`;
+        
+        duplicateKeys.sort().forEach(id => {
+            duplicatesText += `${id} (appears ${duplicates[id]} times)\n`;
+        });
+
+        elements.duplicatesArea.value = duplicatesText;
+        elements.duplicatesStatsText.textContent = `${duplicateKeys.length} duplicate${duplicateKeys.length !== 1 ? 's' : ''} found`;
+        elements.duplicatesStatsText.style.color = 'var(--danger-color)';
+    }
+}
+
 // Copy to clipboard
 async function copyToClipboard() {
     const text = elements.outputArea.value;
@@ -295,11 +387,33 @@ async function copyToClipboard() {
     }
 }
 
+// Copy duplicates to clipboard
+async function copyDuplicatesToClipboard() {
+    const text = elements.duplicatesArea.value;
+    
+    if (!text) {
+        showNotification('Nothing to copy!', 'warning');
+        return;
+    }
+
+    try {
+        await navigator.clipboard.writeText(text);
+        showNotification('✓ Duplicates copied to clipboard!', 'success');
+    } catch (err) {
+        // Fallback for older browsers
+        elements.duplicatesArea.select();
+        document.execCommand('copy');
+        showNotification('✓ Duplicates copied to clipboard!', 'success');
+    }
+}
+
 // Clear all
 function clearAll() {
     elements.inputArea.value = '';
     elements.outputArea.value = '';
+    elements.duplicatesArea.value = '';
     elements.statsText.textContent = '';
+    elements.duplicatesStatsText.textContent = '';
     state.categorizedIds = {
         sustainability: [],
         viewability: [],

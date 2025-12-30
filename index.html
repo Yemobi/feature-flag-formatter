@@ -141,20 +141,32 @@
                 <!-- Duplicates Check View -->
                 <div class="output-view" id="duplicatesView" style="display: none;">
                     <div class="duplicates-info">
-                        <p class="help-text">This tool identifies duplicate IDs in your input to help you clean up your data before formatting.</p>
+                        <p class="help-text">Paste existing IDs from your repository below. We'll check if any of your new IDs already exist.</p>
                     </div>
                     
-                    <div class="output-container">
+                    <div class="existing-ids-section">
+                        <label for="existingIdsArea">Existing IDs from Repository</label>
                         <textarea 
-                            id="duplicatesArea" 
-                            readonly
-                            placeholder="Duplicate IDs will appear here..."
+                            id="existingIdsArea" 
+                            placeholder="Paste existing IDs from your repository here...&#10;&#10;Example:&#10;existing_id_001&#10;existing_id_002&#10;existing_id_003"
+                            rows="8"
                         ></textarea>
+                    </div>
+
+                    <div class="comparison-results">
+                        <h3>Comparison Results</h3>
+                        <div class="output-container">
+                            <textarea 
+                                id="duplicatesArea" 
+                                readonly
+                                placeholder="Results will appear here after you add IDs..."
+                            ></textarea>
+                        </div>
                     </div>
 
                     <div class="output-actions">
                         <button class="btn btn-success" id="copyDuplicatesBtn">
-                            <span class="icon">📋</span> Copy Duplicates
+                            <span class="icon">📋</span> Copy Results
                         </button>
                         <span class="stats" id="duplicatesStatsText"></span>
                     </div>

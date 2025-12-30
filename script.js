@@ -22,6 +22,7 @@ const state = {
 const elements = {
     inputArea: document.getElementById('inputArea'),
     outputArea: document.getElementById('outputArea'),
+    existingIdsArea: document.getElementById('existingIdsArea'),
     duplicatesArea: document.getElementById('duplicatesArea'),
     formatBtn: document.getElementById('formatBtn'),
     clearBtn: document.getElementById('clearBtn'),
@@ -112,7 +113,17 @@ function init() {
     elements.copyDuplicatesBtn.addEventListener('click', copyDuplicatesToClipboard);
 
     // Input area auto-format
-    elements.inputArea.addEventListener('input', debounce(formatAndDisplay, 500));
+    elements.inputArea.addEventListener('input', debounce(() => {
+        formatAndDisplay();
+        if (state.outputMode === 'duplicates') {
+            checkForMatches();
+        }
+    }, 500));
+
+    // Existing IDs area - check for matches when typing
+    if (elements.existingIdsArea) {
+        elements.existingIdsArea.addEventListener('input', debounce(checkForMatches, 500));
+    }
 
     // Load examples
     document.querySelectorAll('.load-example').forEach(btn => {
@@ -313,57 +324,97 @@ function updateFormattedOutput() {
 
 // Update duplicates output
 function updateDuplicatesOutput() {
-    const input = elements.inputArea.value.trim();
+    // This is now handled by checkForMatches()
+    checkForMatches();
+}
+
+// Check for matches between new IDs and existing IDs
+function checkForMatches() {
+    const newIdsInput = elements.inputArea.value.trim();
+    const existingIdsInput = elements.existingIdsArea ? elements.existingIdsArea.value.trim() : '';
     
-    if (!input) {
-        elements.duplicatesArea.value = '';
+    if (!newIdsInput) {
+        elements.duplicatesArea.value = 'Enter new IDs in the "Input IDs" section on the left.';
         elements.duplicatesStatsText.textContent = '';
         return;
     }
 
-    // Get all IDs without categories
-    const allIds = [];
-    const lines = input.split(/[\n,]+/).map(line => line.trim()).filter(line => line);
+    if (!existingIdsInput) {
+        elements.duplicatesArea.value = 'Paste existing IDs from your repository in the field above to check for matches.';
+        elements.duplicatesStatsText.textContent = '';
+        return;
+    }
 
-    lines.forEach(line => {
-        // Remove category tags to get clean ID
+    // Parse new IDs (removing category tags)
+    const newIds = [];
+    const newIdsLines = newIdsInput.split(/[\n,]+/).map(line => line.trim()).filter(line => line);
+    
+    newIdsLines.forEach(line => {
         const cleanId = line.replace(/\s*-\s*(S|V|B|TP|Sustainability|Viewability|Both|ThirdParty|Third-Party)$/i, '').trim();
         if (cleanId) {
-            allIds.push(cleanId);
+            newIds.push(cleanId);
         }
     });
 
-    // Find duplicates
-    const idCount = {};
-    const duplicates = {};
-
-    allIds.forEach(id => {
-        idCount[id] = (idCount[id] || 0) + 1;
+    // Parse existing IDs (removing quotes and cleaning)
+    const existingIds = new Set();
+    const existingIdsLines = existingIdsInput.split(/[\n,]+/).map(line => line.trim()).filter(line => line);
+    
+    existingIdsLines.forEach(line => {
+        // Remove quotes (single or double) and trim
+        const cleanId = line.replace(/^["']|["']$/g, '').trim();
+        if (cleanId) {
+            existingIds.add(cleanId.toLowerCase()); // Case-insensitive comparison
+        }
     });
 
-    Object.keys(idCount).forEach(id => {
-        if (idCount[id] > 1) {
-            duplicates[id] = idCount[id];
+    // Check for matches
+    const matches = [];
+    const unique = [];
+    
+    newIds.forEach(id => {
+        if (existingIds.has(id.toLowerCase())) {
+            matches.push(id);
+        } else {
+            unique.push(id);
         }
     });
 
     // Format output
-    const duplicateKeys = Object.keys(duplicates);
+    let resultText = '';
     
-    if (duplicateKeys.length === 0) {
-        elements.duplicatesArea.value = '✓ No duplicates found!\n\nAll IDs are unique.';
-        elements.duplicatesStatsText.textContent = '0 duplicates';
+    if (matches.length > 0) {
+        resultText += '⚠️ ALREADY FEATURE FLAGGED (DO NOT ADD):\n';
+        resultText += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+        matches.forEach(id => {
+            resultText += `❌ ${id}\n`;
+        });
+        resultText += '\n\n';
+    }
+
+    if (unique.length > 0) {
+        resultText += '✓ NEW IDs (Safe to Add):\n';
+        resultText += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+        unique.forEach(id => {
+            resultText += `✓ ${id}\n`;
+        });
+    }
+
+    if (matches.length === 0 && unique.length === 0) {
+        resultText = 'No IDs to check.';
+    }
+
+    elements.duplicatesArea.value = resultText;
+    
+    // Update stats
+    if (matches.length > 0) {
+        elements.duplicatesStatsText.textContent = `⚠️ ${matches.length} duplicate${matches.length !== 1 ? 's' : ''} found | ${unique.length} new ID${unique.length !== 1 ? 's' : ''}`;
+        elements.duplicatesStatsText.style.color = 'var(--danger-color)';
+    } else if (unique.length > 0) {
+        elements.duplicatesStatsText.textContent = `✓ All ${unique.length} ID${unique.length !== 1 ? 's are' : ' is'} new`;
         elements.duplicatesStatsText.style.color = 'var(--success-color)';
     } else {
-        let duplicatesText = `Found ${duplicateKeys.length} duplicate ID${duplicateKeys.length !== 1 ? 's' : ''}:\n\n`;
-        
-        duplicateKeys.sort().forEach(id => {
-            duplicatesText += `${id} (appears ${duplicates[id]} times)\n`;
-        });
-
-        elements.duplicatesArea.value = duplicatesText;
-        elements.duplicatesStatsText.textContent = `${duplicateKeys.length} duplicate${duplicateKeys.length !== 1 ? 's' : ''} found`;
-        elements.duplicatesStatsText.style.color = 'var(--danger-color)';
+        elements.duplicatesStatsText.textContent = '';
     }
 }
 
@@ -412,6 +463,9 @@ function clearAll() {
     elements.inputArea.value = '';
     elements.outputArea.value = '';
     elements.duplicatesArea.value = '';
+    if (elements.existingIdsArea) {
+        elements.existingIdsArea.value = '';
+    }
     elements.statsText.textContent = '';
     elements.duplicatesStatsText.textContent = '';
     state.categorizedIds = {

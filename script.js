@@ -346,7 +346,7 @@ function getFormatOptions(section) {
         delimiter: document.getElementById(`${section}-delimiter`)?.value || 'comma-space',
         case: document.getElementById(`${section}-case`)?.value || 'none',
         trailingComma: document.getElementById(`${section}-trailing-comma`)?.checked || false,
-        sort: document.getElementById(`${section}-sort`)?.checked || false,
+        sort: false, // Sorting removed - always false
         removeDuplicates: document.getElementById(`${section}-remove-duplicates`)?.checked || false
     };
 }

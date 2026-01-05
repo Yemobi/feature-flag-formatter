@@ -312,6 +312,8 @@
                         <div class="text-input-container hidden" id="ias-text-input">
                             <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;t2_xxxxx&#10;t2_yyyyy&#10;&#10;With details (pipe-separated):&#10;t2_xxxxx | Company Name | IAS_KEY_abc123 | AH-12345&#10;t2_yyyyy | Another Co | IAS_KEY_xyz789 | AH-12346"></textarea>
                         </div>
+                        
+                        <button class="btn btn-primary" onclick="formatOutput('ias')" style="margin-top: 1rem;">Format Output</button>
                     </div>
                     
                     <div class="workflow-card">
@@ -351,13 +353,7 @@
                                     <input type="checkbox" id="ias-trailing-comma">
                                     Trailing Comma
                                 </label>
-                                <label class="checkbox-label">
-                                    <input type="checkbox" id="ias-sort" checked>
-                                    Sort Alphabetically
-                                </label>
                             </div>
-                            
-                            <button class="btn btn-primary" onclick="formatOutput('ias')">Format Output</button>
                         </div>
                     </div>
                     
@@ -420,6 +416,8 @@
                         <div class="text-input-container hidden" id="rmax-text-input">
                             <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;t2_xxxxx&#10;t2_yyyyy&#10;&#10;With Jira ticket (pipe-separated):&#10;t2_xxxxx | AH-12345&#10;t2_yyyyy | AH-12346"></textarea>
                         </div>
+                        
+                        <button class="btn btn-primary" onclick="formatOutput('rmax')" style="margin-top: 1rem;">Format Output</button>
                     </div>
                     
                     <div class="workflow-card">
@@ -459,13 +457,7 @@
                                     <input type="checkbox" id="rmax-trailing-comma" checked>
                                     Trailing Comma
                                 </label>
-                                <label class="checkbox-label">
-                                    <input type="checkbox" id="rmax-sort">
-                                    Sort Alphabetically
-                                </label>
                             </div>
-                            
-                            <button class="btn btn-primary" onclick="formatOutput('rmax')">Format Output</button>
                         </div>
                     </div>
                     
@@ -501,6 +493,8 @@
                         <div class="text-input-container">
                             <textarea class="text-input" id="custom-text-input" placeholder="Paste IDs here (one per line)..."></textarea>
                         </div>
+                        
+                        <button class="btn btn-primary" onclick="formatOutput('custom')" style="margin-top: 1rem;">Format Output</button>
                     </div>
                     
                     <div class="workflow-card">
@@ -541,16 +535,10 @@
                                     Trailing Comma
                                 </label>
                                 <label class="checkbox-label">
-                                    <input type="checkbox" id="custom-sort">
-                                    Sort Alphabetically
-                                </label>
-                                <label class="checkbox-label">
                                     <input type="checkbox" id="custom-remove-duplicates" checked>
                                     Remove Duplicates
                                 </label>
                             </div>
-                            
-                            <button class="btn btn-primary" onclick="formatOutput('custom')">Format Output</button>
                         </div>
                     </div>
                     

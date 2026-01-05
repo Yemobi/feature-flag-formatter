@@ -105,27 +105,22 @@ function addTableRow(section) {
 // Get column configuration for each section
 function getColumnsForSection(section) {
     const configs = {
-        'sustainability': [
+        'doubleverify': [
             { placeholder: 'account_001' },
             { placeholder: 'Company Name' },
-            { placeholder: 'Optional notes' }
-        ],
-        'viewability': [
-            { placeholder: 'account_001' },
-            { placeholder: 'Company Name' },
-            { placeholder: 'Optional notes' }
+            { placeholder: 'AH-12345' }
         ],
         'third-party': [
             { placeholder: 'tp_XXX1' },
             { placeholder: 'Company Name' },
             { placeholder: 'API Key' },
-            { placeholder: 'Optional notes' }
+            { placeholder: 'AH-12345' }
         ],
         'ias': [
             { placeholder: 'account_001' },
             { placeholder: 'Company Name' },
             { placeholder: 'IAS_KEY_abc123' },
-            { placeholder: 'Optional notes' }
+            { placeholder: 'AH-12345' }
         ]
     };
     
@@ -191,13 +186,16 @@ function formatOutput(section) {
     
     const formatted = formatData(data, options);
     
-    // Update output
+    // Update IDs output
     const outputArea = document.getElementById(`${section}-output`);
     outputArea.value = formatted;
     
     // Update stats
     const statsEl = document.getElementById(`${section}-stats`);
     statsEl.textContent = `${data.length} ID${data.length !== 1 ? 's' : ''} formatted`;
+    
+    // Generate Jira tickets output
+    generateJiraOutput(section, data);
     
     showNotification('✓ Formatted successfully!');
 }
@@ -295,7 +293,6 @@ function getFormatOptions(section) {
         quote: document.getElementById(`${section}-quote`)?.value || 'double',
         delimiter: document.getElementById(`${section}-delimiter`)?.value || 'comma-space',
         case: document.getElementById(`${section}-case`)?.value || 'none',
-        includeComments: document.getElementById(`${section}-comments`)?.checked || false,
         trailingComma: document.getElementById(`${section}-trailing-comma`)?.checked || false,
         sort: document.getElementById(`${section}-sort`)?.checked || false,
         removeDuplicates: document.getElementById(`${section}-remove-duplicates`)?.checked || false
@@ -328,7 +325,7 @@ function formatData(data, options) {
         id: applyCaseConversion(item.id, options.case)
     }));
     
-    // Format each item
+    // Format each item (just IDs, no comments)
     const formattedItems = items.map(item => {
         let formattedId = item.id;
         
@@ -337,18 +334,6 @@ function formatData(data, options) {
             formattedId = `"${formattedId}"`;
         } else if (options.quote === 'single') {
             formattedId = `'${formattedId}'`;
-        }
-        
-        // Add comments
-        if (options.includeComments) {
-            const comments = [];
-            if (item.name) comments.push(item.name);
-            if (item.apiKey) comments.push(item.apiKey);
-            if (item.notes) comments.push(item.notes);
-            
-            if (comments.length > 0) {
-                formattedId += `  // ${comments.join(' | ')}`;
-            }
         }
         
         return formattedId;
@@ -382,6 +367,58 @@ function formatData(data, options) {
     }
     
     return result;
+}
+
+// Generate Jira tickets output
+function generateJiraOutput(section, data) {
+    const jiraOutputArea = document.getElementById(`${section}-jira-output`);
+    const jiraStatsEl = document.getElementById(`${section}-jira-stats`);
+    
+    if (!jiraOutputArea) return; // Skip if this section doesn't have Jira output
+    
+    // Extract unique Jira tickets
+    const jiraTickets = new Set();
+    data.forEach(item => {
+        // Jira ticket is in the 'notes' field (3rd column)
+        const ticket = item.notes?.trim();
+        if (ticket && ticket.match(/^[A-Z]+-\d+$/)) { // Matches pattern like AH-12345
+            jiraTickets.add(ticket);
+        }
+    });
+    
+    if (jiraTickets.size === 0) {
+        jiraOutputArea.value = 'No Jira tickets found. Add ticket IDs in format: AH-12345';
+        jiraStatsEl.textContent = '';
+        return;
+    }
+    
+    // Format as markdown links
+    const ticketLinks = Array.from(jiraTickets).sort().map(ticket => {
+        return `#[${ticket}](https://reddit.atlassian.net/browse/${ticket})`;
+    });
+    
+    jiraOutputArea.value = ticketLinks.join('\n');
+    jiraStatsEl.textContent = `${jiraTickets.size} ticket${jiraTickets.size !== 1 ? 's' : ''}`;
+}
+
+// Copy Jira output
+async function copyJiraOutput(section) {
+    const jiraOutputArea = document.getElementById(`${section}-jira-output`);
+    const text = jiraOutputArea.value;
+    
+    if (!text || text.includes('No Jira tickets')) {
+        showNotification('⚠️ No Jira tickets to copy', 'warning');
+        return;
+    }
+    
+    try {
+        await navigator.clipboard.writeText(text);
+        showNotification('✓ Jira links copied to clipboard!');
+    } catch (err) {
+        jiraOutputArea.select();
+        document.execCommand('copy');
+        showNotification('✓ Jira links copied to clipboard!');
+    }
 }
 
 // Apply case conversion

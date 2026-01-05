@@ -15,11 +15,8 @@
 
         <!-- Main Navigation Tabs -->
         <nav class="main-nav">
-            <button class="nav-tab active" data-type="sustainability">
-                <span class="tab-icon">🌱</span> Sustainability
-            </button>
-            <button class="nav-tab" data-type="viewability">
-                <span class="tab-icon">👁️</span> Viewability
+            <button class="nav-tab active" data-type="doubleverify">
+                <span class="tab-icon">✓✓</span> DoubleVerify
             </button>
             <button class="nav-tab" data-type="third-party">
                 <span class="tab-icon">🔗</span> Third Party
@@ -38,10 +35,10 @@
         <!-- Feature Flag Sections -->
         <div class="ff-sections">
             
-            <!-- Sustainability Section -->
-            <section class="ff-section active" id="sustainability-section">
+            <!-- DoubleVerify Section -->
+            <section class="ff-section active" id="doubleverify-section">
                 <div class="section-header">
-                    <h2>🌱 Sustainability Feature Flag</h2>
+                    <h2>✓✓ DoubleVerify Feature Flag</h2>
                 </div>
                 
                 <div class="workflow-grid">
@@ -49,39 +46,39 @@
                     <div class="workflow-card">
                         <h3>Input IDs</h3>
                         <div class="input-mode-toggle">
-                            <button class="mode-btn active" data-mode="table" data-section="sustainability">📊 Table</button>
-                            <button class="mode-btn" data-mode="text" data-section="sustainability">📝 Text</button>
+                            <button class="mode-btn active" data-mode="table" data-section="doubleverify">📊 Table</button>
+                            <button class="mode-btn" data-mode="text" data-section="doubleverify">📝 Text</button>
                         </div>
                         
                         <!-- Table Input -->
-                        <div class="table-input-container" id="sustainability-table-input">
+                        <div class="table-input-container" id="doubleverify-table-input">
                             <div class="table-wrapper">
                                 <table class="id-table">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
                                             <th>Account Name</th>
-                                            <th>Notes</th>
+                                            <th>Jira Ticket ID</th>
                                             <th></th>
                                         </tr>
                                     </thead>
-                                    <tbody id="sustainability-table-body">
+                                    <tbody id="doubleverify-table-body">
                                         <tr>
                                             <td><input type="text" placeholder="account_001" class="table-input"></td>
                                             <td><input type="text" placeholder="Company Name" class="table-input"></td>
-                                            <td><input type="text" placeholder="Optional notes" class="table-input"></td>
+                                            <td><input type="text" placeholder="AH-12345" class="table-input"></td>
                                             <td><button class="btn-icon delete-row" title="Delete row">🗑️</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <button class="btn btn-secondary btn-small" onclick="addTableRow('sustainability')">+ Add Row</button>
-                            <button class="btn btn-secondary btn-small" onclick="pasteFromExcel('sustainability')">📋 Paste from Excel</button>
+                            <button class="btn btn-secondary btn-small" onclick="addTableRow('doubleverify')">+ Add Row</button>
+                            <button class="btn btn-secondary btn-small" onclick="pasteFromExcel('doubleverify')">📋 Paste from Excel</button>
                         </div>
                         
                         <!-- Text Input -->
-                        <div class="text-input-container hidden" id="sustainability-text-input">
-                            <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;account_001&#10;account_002&#10;&#10;With details (pipe-separated):&#10;account_001 | Nike Inc | Campaign notes&#10;account_002 | Adidas | Important client"></textarea>
+                        <div class="text-input-container hidden" id="doubleverify-text-input">
+                            <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;account_001&#10;account_002&#10;&#10;With details (pipe-separated):&#10;account_001 | Nike Inc | AH-12345&#10;account_002 | Adidas | AH-12346"></textarea>
                         </div>
                     </div>
                     
@@ -91,7 +88,7 @@
                         <div class="format-options">
                             <div class="option-group">
                                 <label>Quote Style</label>
-                                <select class="format-select" id="sustainability-quote">
+                                <select class="format-select" id="doubleverify-quote">
                                     <option value="double">Double "ID"</option>
                                     <option value="single">Single 'ID'</option>
                                     <option value="none">None</option>
@@ -100,7 +97,7 @@
                             
                             <div class="option-group">
                                 <label>Delimiter</label>
-                                <select class="format-select" id="sustainability-delimiter">
+                                <select class="format-select" id="doubleverify-delimiter">
                                     <option value="comma-space">Comma + Space</option>
                                     <option value="comma-newline">Comma + New Line</option>
                                     <option value="comma">Comma</option>
@@ -111,7 +108,7 @@
                             
                             <div class="option-group">
                                 <label>Case</label>
-                                <select class="format-select" id="sustainability-case">
+                                <select class="format-select" id="doubleverify-case">
                                     <option value="none">Keep Original</option>
                                     <option value="upper">UPPERCASE</option>
                                     <option value="lower">lowercase</option>
@@ -120,136 +117,33 @@
                             
                             <div class="option-group">
                                 <label class="checkbox-label">
-                                    <input type="checkbox" id="sustainability-comments" checked>
-                                    Include Comments
-                                </label>
-                                <label class="checkbox-label">
-                                    <input type="checkbox" id="sustainability-trailing-comma">
+                                    <input type="checkbox" id="doubleverify-trailing-comma">
                                     Trailing Comma
                                 </label>
                                 <label class="checkbox-label">
-                                    <input type="checkbox" id="sustainability-sort" checked>
+                                    <input type="checkbox" id="doubleverify-sort" checked>
                                     Sort Alphabetically
                                 </label>
                             </div>
                             
-                            <button class="btn btn-primary" onclick="formatOutput('sustainability')">Format Output</button>
+                            <button class="btn btn-primary" onclick="formatOutput('doubleverify')">Format Output</button>
                         </div>
                     </div>
                     
                     <!-- Output -->
                     <div class="workflow-card">
-                        <h3>Output</h3>
-                        <textarea class="output-area" id="sustainability-output" readonly placeholder="Formatted output will appear here..."></textarea>
+                        <h3>IDs Output</h3>
+                        <textarea class="output-area" id="doubleverify-output" readonly placeholder="Formatted IDs will appear here..."></textarea>
                         <div class="output-actions">
-                            <button class="btn btn-success" onclick="copyOutput('sustainability')">📋 Copy to Clipboard</button>
-                            <span class="output-stats" id="sustainability-stats"></span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Viewability Section -->
-            <section class="ff-section" id="viewability-section">
-                <div class="section-header">
-                    <h2>👁️ Viewability Feature Flag</h2>
-                </div>
-                
-                <div class="workflow-grid">
-                    <div class="workflow-card">
-                        <h3>Input IDs</h3>
-                        <div class="input-mode-toggle">
-                            <button class="mode-btn active" data-mode="table" data-section="viewability">📊 Table</button>
-                            <button class="mode-btn" data-mode="text" data-section="viewability">📝 Text</button>
+                            <button class="btn btn-success" onclick="copyOutput('doubleverify')">📋 Copy IDs</button>
+                            <span class="output-stats" id="doubleverify-stats"></span>
                         </div>
                         
-                        <div class="table-input-container" id="viewability-table-input">
-                            <div class="table-wrapper">
-                                <table class="id-table">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Account Name</th>
-                                            <th>Notes</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="viewability-table-body">
-                                        <tr>
-                                            <td><input type="text" placeholder="account_001" class="table-input"></td>
-                                            <td><input type="text" placeholder="Company Name" class="table-input"></td>
-                                            <td><input type="text" placeholder="Optional notes" class="table-input"></td>
-                                            <td><button class="btn-icon delete-row" title="Delete row">🗑️</button></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <button class="btn btn-secondary btn-small" onclick="addTableRow('viewability')">+ Add Row</button>
-                            <button class="btn btn-secondary btn-small" onclick="pasteFromExcel('viewability')">📋 Paste from Excel</button>
-                        </div>
-                        
-                        <div class="text-input-container hidden" id="viewability-text-input">
-                            <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;account_001&#10;account_002&#10;&#10;With details (pipe-separated):&#10;account_001 | Nike Inc | Campaign notes&#10;account_002 | Adidas | Important client"></textarea>
-                        </div>
-                    </div>
-                    
-                    <div class="workflow-card">
-                        <h3>Format Options</h3>
-                        <div class="format-options">
-                            <div class="option-group">
-                                <label>Quote Style</label>
-                                <select class="format-select" id="viewability-quote">
-                                    <option value="double">Double "ID"</option>
-                                    <option value="single">Single 'ID'</option>
-                                    <option value="none">None</option>
-                                </select>
-                            </div>
-                            
-                            <div class="option-group">
-                                <label>Delimiter</label>
-                                <select class="format-select" id="viewability-delimiter">
-                                    <option value="comma-space">Comma + Space</option>
-                                    <option value="comma-newline">Comma + New Line</option>
-                                    <option value="comma">Comma</option>
-                                    <option value="newline">New Line</option>
-                                    <option value="space">Space</option>
-                                </select>
-                            </div>
-                            
-                            <div class="option-group">
-                                <label>Case</label>
-                                <select class="format-select" id="viewability-case">
-                                    <option value="none">Keep Original</option>
-                                    <option value="upper">UPPERCASE</option>
-                                    <option value="lower">lowercase</option>
-                                </select>
-                            </div>
-                            
-                            <div class="option-group">
-                                <label class="checkbox-label">
-                                    <input type="checkbox" id="viewability-comments" checked>
-                                    Include Comments
-                                </label>
-                                <label class="checkbox-label">
-                                    <input type="checkbox" id="viewability-trailing-comma">
-                                    Trailing Comma
-                                </label>
-                                <label class="checkbox-label">
-                                    <input type="checkbox" id="viewability-sort" checked>
-                                    Sort Alphabetically
-                                </label>
-                            </div>
-                            
-                            <button class="btn btn-primary" onclick="formatOutput('viewability')">Format Output</button>
-                        </div>
-                    </div>
-                    
-                    <div class="workflow-card">
-                        <h3>Output</h3>
-                        <textarea class="output-area" id="viewability-output" readonly placeholder="Formatted output will appear here..."></textarea>
+                        <h3 style="margin-top: 2rem;">Jira Tickets for PR</h3>
+                        <textarea class="output-area jira-output" id="doubleverify-jira-output" readonly placeholder="Jira ticket markdown links will appear here..."></textarea>
                         <div class="output-actions">
-                            <button class="btn btn-success" onclick="copyOutput('viewability')">📋 Copy to Clipboard</button>
-                            <span class="output-stats" id="viewability-stats"></span>
+                            <button class="btn btn-success" onclick="copyJiraOutput('doubleverify')">📋 Copy Jira Links</button>
+                            <span class="output-stats" id="doubleverify-jira-stats"></span>
                         </div>
                     </div>
                 </div>
@@ -277,7 +171,7 @@
                                             <th>ID</th>
                                             <th>Account Name</th>
                                             <th>API Key</th>
-                                            <th>Notes</th>
+                                            <th>Jira Ticket ID</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -286,7 +180,7 @@
                                             <td><input type="text" placeholder="tp_XXX1" class="table-input"></td>
                                             <td><input type="text" placeholder="Company Name" class="table-input"></td>
                                             <td><input type="text" placeholder="API Key" class="table-input"></td>
-                                            <td><input type="text" placeholder="Optional notes" class="table-input"></td>
+                                            <td><input type="text" placeholder="AH-12345" class="table-input"></td>
                                             <td><button class="btn-icon delete-row" title="Delete row">🗑️</button></td>
                                         </tr>
                                     </tbody>
@@ -297,7 +191,7 @@
                         </div>
                         
                         <div class="text-input-container hidden" id="third-party-text-input">
-                            <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;tp_XXX1&#10;tp_XXX2&#10;&#10;With details (pipe-separated):&#10;tp_XXX1 | Company Name | API_KEY_123 | Notes&#10;tp_XXX2 | Another Co | API_KEY_456 | Important"></textarea>
+                            <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;tp_XXX1&#10;tp_XXX2&#10;&#10;With details (pipe-separated):&#10;tp_XXX1 | Company Name | API_KEY_123 | AH-12345&#10;tp_XXX2 | Another Co | API_KEY_456 | AH-12346"></textarea>
                         </div>
                     </div>
                     
@@ -335,10 +229,6 @@
                             
                             <div class="option-group">
                                 <label class="checkbox-label">
-                                    <input type="checkbox" id="third-party-comments" checked>
-                                    Include Comments
-                                </label>
-                                <label class="checkbox-label">
                                     <input type="checkbox" id="third-party-trailing-comma" checked>
                                     Trailing Comma
                                 </label>
@@ -353,11 +243,18 @@
                     </div>
                     
                     <div class="workflow-card">
-                        <h3>Output</h3>
-                        <textarea class="output-area" id="third-party-output" readonly placeholder="Formatted output will appear here..."></textarea>
+                        <h3>IDs Output</h3>
+                        <textarea class="output-area" id="third-party-output" readonly placeholder="Formatted IDs will appear here..."></textarea>
                         <div class="output-actions">
-                            <button class="btn btn-success" onclick="copyOutput('third-party')">📋 Copy to Clipboard</button>
+                            <button class="btn btn-success" onclick="copyOutput('third-party')">📋 Copy IDs</button>
                             <span class="output-stats" id="third-party-stats"></span>
+                        </div>
+                        
+                        <h3 style="margin-top: 2rem;">Jira Tickets for PR</h3>
+                        <textarea class="output-area jira-output" id="third-party-jira-output" readonly placeholder="Jira ticket markdown links will appear here..."></textarea>
+                        <div class="output-actions">
+                            <button class="btn btn-success" onclick="copyJiraOutput('third-party')">📋 Copy Jira Links</button>
+                            <span class="output-stats" id="third-party-jira-stats"></span>
                         </div>
                     </div>
                 </div>
@@ -385,7 +282,7 @@
                                             <th>ID</th>
                                             <th>Account Name</th>
                                             <th>IAS API Key</th>
-                                            <th>Notes</th>
+                                            <th>Jira Ticket ID</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -394,7 +291,7 @@
                                             <td><input type="text" placeholder="account_001" class="table-input"></td>
                                             <td><input type="text" placeholder="Company Name" class="table-input"></td>
                                             <td><input type="text" placeholder="IAS_KEY_abc123" class="table-input"></td>
-                                            <td><input type="text" placeholder="Optional notes" class="table-input"></td>
+                                            <td><input type="text" placeholder="AH-12345" class="table-input"></td>
                                             <td><button class="btn-icon delete-row" title="Delete row">🗑️</button></td>
                                         </tr>
                                     </tbody>
@@ -405,7 +302,7 @@
                         </div>
                         
                         <div class="text-input-container hidden" id="ias-text-input">
-                            <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;account_001&#10;account_002&#10;&#10;With details (pipe-separated):&#10;account_001 | Company Name | IAS_KEY_abc123 | Notes&#10;account_002 | Another Co | IAS_KEY_xyz789 | Important"></textarea>
+                            <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;account_001&#10;account_002&#10;&#10;With details (pipe-separated):&#10;account_001 | Company Name | IAS_KEY_abc123 | AH-12345&#10;account_002 | Another Co | IAS_KEY_xyz789 | AH-12346"></textarea>
                         </div>
                     </div>
                     
@@ -443,10 +340,6 @@
                             
                             <div class="option-group">
                                 <label class="checkbox-label">
-                                    <input type="checkbox" id="ias-comments" checked>
-                                    Include Comments (with API Keys)
-                                </label>
-                                <label class="checkbox-label">
                                     <input type="checkbox" id="ias-trailing-comma">
                                     Trailing Comma
                                 </label>
@@ -461,11 +354,18 @@
                     </div>
                     
                     <div class="workflow-card">
-                        <h3>Output</h3>
-                        <textarea class="output-area" id="ias-output" readonly placeholder="Formatted output will appear here..."></textarea>
+                        <h3>IDs Output</h3>
+                        <textarea class="output-area" id="ias-output" readonly placeholder="Formatted IDs will appear here..."></textarea>
                         <div class="output-actions">
-                            <button class="btn btn-success" onclick="copyOutput('ias')">📋 Copy to Clipboard</button>
+                            <button class="btn btn-success" onclick="copyOutput('ias')">📋 Copy IDs</button>
                             <span class="output-stats" id="ias-stats"></span>
+                        </div>
+                        
+                        <h3 style="margin-top: 2rem;">Jira Tickets for PR</h3>
+                        <textarea class="output-area jira-output" id="ias-jira-output" readonly placeholder="Jira ticket markdown links will appear here..."></textarea>
+                        <div class="output-actions">
+                            <button class="btn btn-success" onclick="copyJiraOutput('ias')">📋 Copy Jira Links</button>
+                            <span class="output-stats" id="ias-jira-stats"></span>
                         </div>
                     </div>
                 </div>

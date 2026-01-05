@@ -364,18 +364,18 @@
                             <div class="option-group">
                                 <label>Quote Style</label>
                                 <select class="format-select" id="ias-quote">
+                                    <option value="none">None</option>
                                     <option value="double">Double "ID"</option>
                                     <option value="single">Single 'ID'</option>
-                                    <option value="none">None</option>
                                 </select>
                             </div>
                             
                             <div class="option-group">
                                 <label>Delimiter</label>
                                 <select class="format-select" id="ias-delimiter">
+                                    <option value="comma">Comma</option>
                                     <option value="comma-space">Comma + Space</option>
                                     <option value="comma-newline">Comma + New Line</option>
-                                    <option value="comma">Comma</option>
                                     <option value="newline">New Line</option>
                                     <option value="space">Space</option>
                                 </select>
@@ -384,9 +384,9 @@
                             <div class="option-group">
                                 <label>Case</label>
                                 <select class="format-select" id="ias-case">
+                                    <option value="lower">lowercase</option>
                                     <option value="none">Keep Original</option>
                                     <option value="upper">UPPERCASE</option>
-                                    <option value="lower">lowercase</option>
                                 </select>
                             </div>
                             
@@ -395,15 +395,18 @@
                                     <input type="checkbox" id="ias-trailing-comma">
                                     Trailing Comma
                                 </label>
+                            </div>
+                            
+                            <div class="option-group">
                                 <label class="checkbox-label">
-                                    <input type="checkbox" id="ias-add-comments" checked>
-                                    Comment Account Name
+                                    <input type="checkbox" id="ias-include-comments">
+                                    Include Account Name Comments
                                 </label>
                             </div>
                             
                             <div class="option-group">
                                 <label>Comment Character</label>
-                                <input type="text" class="format-input" id="ias-comment-char" value="#" placeholder="#" maxlength="2">
+                                <input type="text" class="format-select" id="ias-comment-char" value="#" maxlength="2" style="width: 60px;" placeholder="#">
                             </div>
                         </div>
                     </div>
@@ -415,6 +418,13 @@
                             <button class="btn btn-success" onclick="copyOutput('ias')">📋 Copy IDs</button>
                             <button class="btn btn-secondary" onclick="sendToDuplicateChecker('ias')">🔍 Check in Duplicates</button>
                             <span class="output-stats" id="ias-stats"></span>
+                        </div>
+                        
+                        <h3 style="margin-top: 2rem;">ID:APIKey Pairs</h3>
+                        <textarea class="output-area" id="ias-apikey-output" readonly placeholder="ID:APIKey pairs will appear here..."></textarea>
+                        <div class="output-actions">
+                            <button class="btn btn-success" onclick="copyOutput('ias', 'apikey')">📋 Copy ID:APIKey Pairs</button>
+                            <span class="output-stats" id="ias-apikey-stats"></span>
                         </div>
                         
                         <h3 style="margin-top: 2rem;">Jira Tickets for PR</h3>

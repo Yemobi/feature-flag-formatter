@@ -230,6 +230,11 @@ function formatOutput(section) {
     const statsEl = document.getElementById(`${section}-stats`);
     statsEl.textContent = `${data.length} ID${data.length !== 1 ? 's' : ''} formatted`;
     
+    // Generate IAS-specific ID:APIKey output
+    if (section === 'ias') {
+        generateIASApiKeyOutput(data, options);
+    }
+    
     // Generate Jira tickets output
     generateJiraOutput(section, data);
     
@@ -490,6 +495,73 @@ function formatData(data, options) {
     return result;
 }
 
+// Generate IAS-specific ID:APIKey output
+function generateIASApiKeyOutput(data, options) {
+    const apikeyOutputArea = document.getElementById('ias-apikey-output');
+    const apikeyStatsEl = document.getElementById('ias-apikey-stats');
+    
+    if (!apikeyOutputArea) return;
+    
+    // Filter items that have API keys
+    const itemsWithKeys = data.filter(item => item.apiKey && item.apiKey.trim());
+    
+    if (itemsWithKeys.length === 0) {
+        apikeyOutputArea.value = 'No API keys found. Add API keys to generate ID:APIKey pairs.';
+        apikeyStatsEl.textContent = '';
+        return;
+    }
+    
+    // Format as ID:APIKey pairs (no spaces)
+    const pairs = itemsWithKeys.map(item => {
+        let id = applyCaseConversion(item.id, options.case);
+        let apiKey = item.apiKey; // API key keeps original case
+        
+        // Apply quotes if specified
+        if (options.quote === 'double') {
+            id = `"${id}"`;
+        } else if (options.quote === 'single') {
+            id = `'${id}'`;
+        }
+        
+        return `${id}:${apiKey}`;
+    });
+    
+    // Join with delimiter (matching the same options as main output)
+    let result;
+    const delimiterHasComma = options.delimiter.includes('comma');
+    
+    // Add comma to each item if delimiter contains comma
+    const formattedPairs = pairs.map(pair => delimiterHasComma ? pair + ',' : pair);
+    
+    switch (options.delimiter) {
+        case 'comma-space':
+            result = delimiterHasComma ? formattedPairs.join(' ') : pairs.join(', ');
+            break;
+        case 'comma-newline':
+            result = delimiterHasComma ? formattedPairs.join('\n') : pairs.join(',\n');
+            break;
+        case 'comma':
+            result = delimiterHasComma ? formattedPairs.join('') : pairs.join(',');
+            break;
+        case 'newline':
+            result = pairs.join('\n');
+            break;
+        case 'space':
+            result = pairs.join(' ');
+            break;
+        default:
+            result = pairs.join(', ');
+    }
+    
+    // Add trailing comma if specified (and not already added)
+    if (options.trailingComma && !delimiterHasComma) {
+        result += ',';
+    }
+    
+    apikeyOutputArea.value = result;
+    apikeyStatsEl.textContent = `${itemsWithKeys.length} pair${itemsWithKeys.length !== 1 ? 's' : ''}`;
+}
+
 // Generate Jira tickets output
 function generateJiraOutput(section, data) {
     const jiraOutputArea = document.getElementById(`${section}-jira-output`);
@@ -644,11 +716,18 @@ function parseIds(text) {
 }
 
 // Copy output to clipboard
-async function copyOutput(section) {
-    const outputArea = document.getElementById(`${section}-output`);
+async function copyOutput(section, outputType = 'main') {
+    let outputArea;
+    
+    if (outputType === 'apikey') {
+        outputArea = document.getElementById(`${section}-apikey-output`);
+    } else {
+        outputArea = document.getElementById(`${section}-output`);
+    }
+    
     const text = outputArea.value;
     
-    if (!text) {
+    if (!text || text.includes('No API keys found') || text.includes('will appear here')) {
         showNotification('⚠️ Nothing to copy', 'warning');
         return;
     }

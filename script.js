@@ -1,531 +1,487 @@
-// State management
-const state = {
-    flagType: 'sustainability',
-    quoteStyle: 'double',
-    delimiter: 'comma-space',
-    caseConversion: 'none',
-    removeDuplicates: true,
-    sortAlphabetically: false,
-    addTrailingComma: false,
-    categorizedIds: {
-        sustainability: [],
-        viewability: [],
-        both: [],
-        'third-party': [],
-        uncategorized: []
-    },
-    currentTab: 'all',
-    outputMode: 'formatted' // 'formatted' or 'duplicates'
-};
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', init);
 
-// DOM elements
-const elements = {
-    inputArea: document.getElementById('inputArea'),
-    outputArea: document.getElementById('outputArea'),
-    existingIdsArea: document.getElementById('existingIdsArea'),
-    duplicatesArea: document.getElementById('duplicatesArea'),
-    formatBtn: document.getElementById('formatBtn'),
-    clearBtn: document.getElementById('clearBtn'),
-    copyBtn: document.getElementById('copyBtn'),
-    copyDuplicatesBtn: document.getElementById('copyDuplicatesBtn'),
-    statsText: document.getElementById('statsText'),
-    duplicatesStatsText: document.getElementById('duplicatesStatsText'),
-    removeDuplicates: document.getElementById('removeDuplicates'),
-    sortAlphabetically: document.getElementById('sortAlphabetically'),
-    addTrailingComma: document.getElementById('addTrailingComma'),
-    formattedView: document.getElementById('formattedView'),
-    duplicatesView: document.getElementById('duplicatesView')
-};
-
-// Initialize event listeners
 function init() {
-    // Output mode tabs (Formatted vs Duplicates)
-    document.querySelectorAll('.mode-tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            setActiveButton(btn, '.mode-tab-btn');
-            state.outputMode = btn.dataset.mode;
-            toggleOutputView();
-        });
+    // Navigation tabs
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', () => switchSection(tab.dataset.type));
     });
 
-    // Button groups
-    document.querySelectorAll('.btn-flag').forEach(btn => {
-        btn.addEventListener('click', () => {
-            setActiveButton(btn, '.btn-flag');
-            state.flagType = btn.dataset.flag;
-            formatAndDisplay();
-        });
+    // Input mode toggles
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => toggleInputMode(btn));
     });
 
-    document.querySelectorAll('.btn-quote').forEach(btn => {
-        btn.addEventListener('click', () => {
-            setActiveButton(btn, '.btn-quote');
-            state.quoteStyle = btn.dataset.quote;
-            formatAndDisplay();
-        });
-    });
-
-    document.querySelectorAll('.btn-delim').forEach(btn => {
-        btn.addEventListener('click', () => {
-            setActiveButton(btn, '.btn-delim');
-            state.delimiter = btn.dataset.delim;
-            formatAndDisplay();
-        });
-    });
-
-    document.querySelectorAll('.btn-case').forEach(btn => {
-        btn.addEventListener('click', () => {
-            setActiveButton(btn, '.btn-case');
-            state.caseConversion = btn.dataset.case;
-            formatAndDisplay();
-        });
-    });
-
-    // Tab buttons
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            setActiveButton(btn, '.tab-btn');
-            state.currentTab = btn.dataset.tab;
-            formatAndDisplay();
-        });
-    });
-
-    // Checkboxes
-    elements.removeDuplicates.addEventListener('change', (e) => {
-        state.removeDuplicates = e.target.checked;
-        formatAndDisplay();
-    });
-
-    elements.sortAlphabetically.addEventListener('change', (e) => {
-        state.sortAlphabetically = e.target.checked;
-        formatAndDisplay();
-    });
-
-    elements.addTrailingComma.addEventListener('change', (e) => {
-        state.addTrailingComma = e.target.checked;
-        formatAndDisplay();
-    });
-
-    // Action buttons
-    elements.formatBtn.addEventListener('click', formatAndDisplay);
-    elements.clearBtn.addEventListener('click', clearAll);
-    elements.copyBtn.addEventListener('click', copyToClipboard);
-    elements.copyDuplicatesBtn.addEventListener('click', copyDuplicatesToClipboard);
-
-    // Input area auto-format
-    elements.inputArea.addEventListener('input', debounce(() => {
-        formatAndDisplay();
-        if (state.outputMode === 'duplicates') {
-            checkForMatches();
-        }
-    }, 500));
-
-    // Existing IDs area - check for matches when typing
-    if (elements.existingIdsArea) {
-        elements.existingIdsArea.addEventListener('input', debounce(checkForMatches, 500));
-    }
-
-    // Load examples
-    document.querySelectorAll('.load-example').forEach(btn => {
-        btn.addEventListener('click', () => loadExample(btn.dataset.example));
-    });
-}
-
-// Helper function to set active button
-function setActiveButton(activeBtn, selector) {
-    document.querySelectorAll(selector).forEach(btn => btn.classList.remove('active'));
-    activeBtn.classList.add('active');
-}
-
-// Parse input and categorize IDs
-function parseInput(input) {
-    const categorized = {
-        sustainability: [],
-        viewability: [],
-        both: [],
-        'third-party': [],
-        uncategorized: []
-    };
-
-    // Split by newlines and commas, clean up whitespace
-    const lines = input.split(/[\n,]+/).map(line => line.trim()).filter(line => line);
-
-    lines.forEach(line => {
-        // Check for category tags
-        const sustainabilityMatch = line.match(/^(.+?)\s*-\s*(S|Sustainability)$/i);
-        const viewabilityMatch = line.match(/^(.+?)\s*-\s*(V|Viewability)$/i);
-        const bothMatch = line.match(/^(.+?)\s*-\s*(B|Both)$/i);
-        const thirdPartyMatch = line.match(/^(.+?)\s*-\s*(TP|ThirdParty|Third-Party)$/i);
-
-        if (sustainabilityMatch) {
-            categorized.sustainability.push(sustainabilityMatch[1].trim());
-        } else if (viewabilityMatch) {
-            categorized.viewability.push(viewabilityMatch[1].trim());
-        } else if (bothMatch) {
-            categorized.both.push(bothMatch[1].trim());
-            // If marked as "both", add to both sustainability and viewability
-            categorized.sustainability.push(bothMatch[1].trim());
-            categorized.viewability.push(bothMatch[1].trim());
-        } else if (thirdPartyMatch) {
-            categorized['third-party'].push(thirdPartyMatch[1].trim());
-        } else {
-            // No tag found, add to uncategorized
-            categorized.uncategorized.push(line);
+    // Delete row buttons
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('delete-row')) {
+            e.target.closest('tr').remove();
         }
     });
 
-    return categorized;
-}
-
-// Format IDs based on current state
-function formatIds(ids) {
-    let formatted = [...ids];
-
-    // Remove duplicates
-    if (state.removeDuplicates) {
-        formatted = [...new Set(formatted)];
-    }
-
-    // Sort alphabetically
-    if (state.sortAlphabetically) {
-        formatted.sort((a, b) => a.localeCompare(b));
-    }
-
-    // Apply case conversion
-    formatted = formatted.map(id => {
-        switch (state.caseConversion) {
-            case 'upper':
-                return id.toUpperCase();
-            case 'lower':
-                return id.toLowerCase();
-            default:
-                return id;
-        }
-    });
-
-    // Apply quotes
-    formatted = formatted.map(id => {
-        switch (state.quoteStyle) {
-            case 'double':
-                return `"${id}"`;
-            case 'single':
-                return `'${id}'`;
-            default:
-                return id;
-        }
-    });
-
-    // Apply delimiter
-    let result;
-    switch (state.delimiter) {
-        case 'comma-space':
-            result = formatted.join(', ');
-            break;
-        case 'comma':
-            result = formatted.join(',');
-            break;
-        case 'newline':
-            result = formatted.join(',\n');
-            break;
-        case 'space':
-            result = formatted.join(' ');
-            break;
-        default:
-            result = formatted.join(', ');
-    }
-
-    // Add trailing comma if requested
-    if (state.addTrailingComma && formatted.length > 0) {
-        result += ',';
-    }
-
-    return result;
-}
-
-// Format and display output
-function formatAndDisplay() {
-    const input = elements.inputArea.value.trim();
+    // Auto-check duplicates on input
+    const duplicatesNewIds = document.getElementById('duplicates-new-ids');
+    const duplicatesExistingIds = document.getElementById('duplicates-existing-ids');
     
-    if (!input) {
-        elements.outputArea.value = '';
-        elements.duplicatesArea.value = '';
-        elements.statsText.textContent = '';
-        elements.duplicatesStatsText.textContent = '';
+    if (duplicatesNewIds && duplicatesExistingIds) {
+        duplicatesNewIds.addEventListener('input', () => checkDuplicates());
+        duplicatesExistingIds.addEventListener('input', () => checkDuplicates());
+    }
+}
+
+// Switch between feature flag sections
+function switchSection(type) {
+    // Update active tab
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.dataset.type === type) {
+            tab.classList.add('active');
+        }
+    });
+
+    // Update active section
+    document.querySelectorAll('.ff-section').forEach(section => {
+        section.classList.remove('active');
+        if (section.id === `${type}-section`) {
+            section.classList.add('active');
+        }
+    });
+}
+
+// Toggle between table and text input modes
+function toggleInputMode(btn) {
+    const section = btn.dataset.section;
+    const mode = btn.dataset.mode;
+    
+    // Update active button
+    btn.parentElement.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    // Toggle visibility
+    const tableInput = document.getElementById(`${section}-table-input`);
+    const textInput = document.getElementById(`${section}-text-input`);
+    
+    if (mode === 'table') {
+        tableInput?.classList.remove('hidden');
+        textInput?.classList.add('hidden');
+    } else {
+        tableInput?.classList.add('hidden');
+        textInput?.classList.remove('hidden');
+    }
+}
+
+// Add a new row to table
+function addTableRow(section) {
+    const tbody = document.getElementById(`${section}-table-body`);
+    const firstRow = tbody.querySelector('tr');
+    const cellCount = firstRow.querySelectorAll('td').length;
+    
+    const newRow = document.createElement('tr');
+    
+    // Create cells based on section type
+    const columns = getColumnsForSection(section);
+    columns.forEach(col => {
+        const td = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = col.placeholder;
+        input.className = 'table-input';
+        td.appendChild(input);
+        newRow.appendChild(td);
+    });
+    
+    // Add delete button
+    const actionTd = document.createElement('td');
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'btn-icon delete-row';
+    deleteBtn.title = 'Delete row';
+    deleteBtn.textContent = '🗑️';
+    actionTd.appendChild(deleteBtn);
+    newRow.appendChild(actionTd);
+    
+    tbody.appendChild(newRow);
+}
+
+// Get column configuration for each section
+function getColumnsForSection(section) {
+    const configs = {
+        'sustainability': [
+            { placeholder: 'account_001' },
+            { placeholder: 'Company Name' },
+            { placeholder: 'Optional notes' }
+        ],
+        'viewability': [
+            { placeholder: 'account_001' },
+            { placeholder: 'Company Name' },
+            { placeholder: 'Optional notes' }
+        ],
+        'third-party': [
+            { placeholder: 'tp_XXX1' },
+            { placeholder: 'Company Name' },
+            { placeholder: 'API Key' },
+            { placeholder: 'Optional notes' }
+        ],
+        'ias': [
+            { placeholder: 'account_001' },
+            { placeholder: 'Company Name' },
+            { placeholder: 'IAS_KEY_abc123' },
+            { placeholder: 'Optional notes' }
+        ]
+    };
+    
+    return configs[section] || [];
+}
+
+// Paste from Excel/Sheets
+function pasteFromExcel(section) {
+    navigator.clipboard.readText().then(text => {
+        const tbody = document.getElementById(`${section}-table-body`);
+        tbody.innerHTML = ''; // Clear existing rows
+        
+        const lines = text.trim().split('\n');
+        lines.forEach(line => {
+            const cells = line.split('\t'); // Tab-separated from Excel
+            
+            const row = document.createElement('tr');
+            const columns = getColumnsForSection(section);
+            
+            columns.forEach((col, index) => {
+                const td = document.createElement('td');
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = cells[index] || '';
+                input.placeholder = col.placeholder;
+                input.className = 'table-input';
+                td.appendChild(input);
+                row.appendChild(td);
+            });
+            
+            // Add delete button
+            const actionTd = document.createElement('td');
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'btn-icon delete-row';
+            deleteBtn.title = 'Delete row';
+            deleteBtn.textContent = '🗑️';
+            actionTd.appendChild(deleteBtn);
+            row.appendChild(actionTd);
+            
+            tbody.appendChild(row);
+        });
+        
+        showNotification('✓ Pasted from clipboard!');
+    }).catch(err => {
+        showNotification('⚠️ Please allow clipboard access', 'warning');
+    });
+}
+
+// Format output for a specific section
+function formatOutput(section) {
+    if (section === 'duplicates') {
+        checkDuplicates();
         return;
     }
-
-    // Parse and categorize
-    state.categorizedIds = parseInput(input);
-
-    // Update both views
-    updateFormattedOutput();
-    updateDuplicatesOutput();
-}
-
-// Toggle between formatted and duplicates view
-function toggleOutputView() {
-    if (state.outputMode === 'formatted') {
-        elements.formattedView.style.display = 'block';
-        elements.duplicatesView.style.display = 'none';
-    } else {
-        elements.formattedView.style.display = 'none';
-        elements.duplicatesView.style.display = 'block';
+    
+    const data = getInputData(section);
+    const options = getFormatOptions(section);
+    
+    if (data.length === 0) {
+        showNotification('⚠️ Please add some IDs first', 'warning');
+        return;
     }
+    
+    const formatted = formatData(data, options);
+    
+    // Update output
+    const outputArea = document.getElementById(`${section}-output`);
+    outputArea.value = formatted;
+    
+    // Update stats
+    const statsEl = document.getElementById(`${section}-stats`);
+    statsEl.textContent = `${data.length} ID${data.length !== 1 ? 's' : ''} formatted`;
+    
+    showNotification('✓ Formatted successfully!');
 }
 
-// Update formatted output
-function updateFormattedOutput() {
-    let outputText = '';
-    let totalCount = 0;
-
-    // Determine what to display based on current tab
-    if (state.currentTab === 'all') {
-        // Show all categories with headers
-        const categories = [
-            { key: 'sustainability', label: 'Sustainability' },
-            { key: 'viewability', label: 'Viewability' },
-            { key: 'third-party', label: 'Third Party' },
-            { key: 'uncategorized', label: 'Uncategorized' }
-        ];
-
-        categories.forEach(({ key, label }) => {
-            const ids = state.categorizedIds[key];
-            if (ids.length > 0) {
-                if (outputText) outputText += '\n\n';
-                outputText += `// ${label}\n`;
-                outputText += formatIds(ids);
-                totalCount += ids.length;
+// Get input data from table or text
+function getInputData(section) {
+    const data = [];
+    
+    // Check if table mode is active
+    const tableInput = document.getElementById(`${section}-table-input`);
+    const textInput = document.getElementById(`${section}-text-input`);
+    
+    if (tableInput && !tableInput.classList.contains('hidden')) {
+        // Get data from table
+        const tbody = document.getElementById(`${section}-table-body`);
+        const rows = tbody.querySelectorAll('tr');
+        
+        rows.forEach(row => {
+            const inputs = row.querySelectorAll('.table-input');
+            const rowData = {
+                id: inputs[0]?.value.trim() || '',
+                name: inputs[1]?.value.trim() || '',
+                apiKey: inputs[2]?.value.trim() || '',
+                notes: inputs[3]?.value.trim() || ''
+            };
+            
+            if (rowData.id) {
+                data.push(rowData);
+            }
+        });
+    } else if (textInput && !textInput.classList.contains('hidden')) {
+        // Get data from text area
+        const textarea = textInput.querySelector('.text-input');
+        const lines = textarea.value.split('\n').filter(line => line.trim());
+        
+        lines.forEach(line => {
+            const trimmed = line.trim();
+            if (trimmed) {
+                data.push({ id: trimmed, name: '', apiKey: '', notes: '' });
             }
         });
     } else {
-        // Show specific category
-        const ids = state.categorizedIds[state.currentTab] || [];
-        outputText = formatIds(ids);
-        totalCount = ids.length;
-    }
-
-    elements.outputArea.value = outputText;
-    
-    // Update stats
-    const stats = [];
-    stats.push(`${totalCount} ID${totalCount !== 1 ? 's' : ''}`);
-    if (state.categorizedIds.sustainability.length > 0) {
-        stats.push(`${state.categorizedIds.sustainability.length} Sustainability`);
-    }
-    if (state.categorizedIds.viewability.length > 0) {
-        stats.push(`${state.categorizedIds.viewability.length} Viewability`);
-    }
-    if (state.categorizedIds['third-party'].length > 0) {
-        stats.push(`${state.categorizedIds['third-party'].length} Third Party`);
+        // For custom section (always text)
+        const textarea = document.getElementById(`${section}-text-input`);
+        if (textarea) {
+            const lines = textarea.value.split('\n').filter(line => line.trim());
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                if (trimmed) {
+                    data.push({ id: trimmed, name: '', apiKey: '', notes: '' });
+                }
+            });
+        }
     }
     
-    elements.statsText.textContent = stats.join(' • ');
+    return data;
 }
 
-// Update duplicates output
-function updateDuplicatesOutput() {
-    // This is now handled by checkForMatches()
-    checkForMatches();
+// Get format options for a section
+function getFormatOptions(section) {
+    return {
+        quote: document.getElementById(`${section}-quote`)?.value || 'double',
+        delimiter: document.getElementById(`${section}-delimiter`)?.value || 'comma-space',
+        case: document.getElementById(`${section}-case`)?.value || 'none',
+        includeComments: document.getElementById(`${section}-comments`)?.checked || false,
+        trailingComma: document.getElementById(`${section}-trailing-comma`)?.checked || false,
+        sort: document.getElementById(`${section}-sort`)?.checked || false,
+        removeDuplicates: document.getElementById(`${section}-remove-duplicates`)?.checked || false
+    };
 }
 
-// Check for matches between new IDs and existing IDs
-function checkForMatches() {
-    const newIdsInput = elements.inputArea.value.trim();
-    const existingIdsInput = elements.existingIdsArea ? elements.existingIdsArea.value.trim() : '';
+// Format data according to options
+function formatData(data, options) {
+    let items = [...data];
     
-    if (!newIdsInput) {
-        elements.duplicatesArea.value = 'Enter new IDs in the "Input IDs" section on the left.';
-        elements.duplicatesStatsText.textContent = '';
+    // Remove duplicates
+    if (options.removeDuplicates) {
+        const seen = new Set();
+        items = items.filter(item => {
+            const id = item.id.toLowerCase();
+            if (seen.has(id)) return false;
+            seen.add(id);
+            return true;
+        });
+    }
+    
+    // Sort
+    if (options.sort) {
+        items.sort((a, b) => a.id.localeCompare(b.id));
+    }
+    
+    // Apply case conversion
+    items = items.map(item => ({
+        ...item,
+        id: applyCaseConversion(item.id, options.case)
+    }));
+    
+    // Format each item
+    const formattedItems = items.map(item => {
+        let formattedId = item.id;
+        
+        // Apply quotes
+        if (options.quote === 'double') {
+            formattedId = `"${formattedId}"`;
+        } else if (options.quote === 'single') {
+            formattedId = `'${formattedId}'`;
+        }
+        
+        // Add comments
+        if (options.includeComments) {
+            const comments = [];
+            if (item.name) comments.push(item.name);
+            if (item.apiKey) comments.push(item.apiKey);
+            if (item.notes) comments.push(item.notes);
+            
+            if (comments.length > 0) {
+                formattedId += `  // ${comments.join(' | ')}`;
+            }
+        }
+        
+        return formattedId;
+    });
+    
+    // Join with delimiter
+    let result;
+    switch (options.delimiter) {
+        case 'comma-space':
+            result = formattedItems.join(', ');
+            break;
+        case 'comma':
+            result = formattedItems.join(',');
+            break;
+        case 'newline':
+            result = formattedItems.join(',\n');
+            break;
+        case 'space':
+            result = formattedItems.join(' ');
+            break;
+        default:
+            result = formattedItems.join(', ');
+    }
+    
+    // Add trailing comma
+    if (options.trailingComma && formattedItems.length > 0) {
+        result += ',';
+    }
+    
+    return result;
+}
+
+// Apply case conversion
+function applyCaseConversion(text, caseType) {
+    switch (caseType) {
+        case 'upper':
+            return text.toUpperCase();
+        case 'lower':
+            return text.toLowerCase();
+        default:
+            return text;
+    }
+}
+
+// Check for duplicates
+function checkDuplicates() {
+    const newIdsTextarea = document.getElementById('duplicates-new-ids');
+    const existingIdsTextarea = document.getElementById('duplicates-existing-ids');
+    const outputArea = document.getElementById('duplicates-output');
+    const statsEl = document.getElementById('duplicates-stats');
+    
+    const newIdsText = newIdsTextarea.value.trim();
+    const existingIdsText = existingIdsTextarea.value.trim();
+    
+    if (!newIdsText) {
+        outputArea.value = 'Enter new IDs in the "New IDs (To Add)" field.';
+        statsEl.textContent = '';
         return;
     }
-
-    if (!existingIdsInput) {
-        elements.duplicatesArea.value = 'Paste existing IDs from your repository in the field above to check for matches.';
-        elements.duplicatesStatsText.textContent = '';
+    
+    if (!existingIdsText) {
+        outputArea.value = 'Paste existing repository IDs in the "Existing IDs (From Repo)" field.';
+        statsEl.textContent = '';
         return;
     }
-
-    // Parse new IDs (removing category tags)
-    const newIds = [];
-    const newIdsLines = newIdsInput.split(/[\n,]+/).map(line => line.trim()).filter(line => line);
     
-    newIdsLines.forEach(line => {
-        const cleanId = line.replace(/\s*-\s*(S|V|B|TP|Sustainability|Viewability|Both|ThirdParty|Third-Party)$/i, '').trim();
-        if (cleanId) {
-            newIds.push(cleanId);
-        }
-    });
-
-    // Parse existing IDs (removing quotes and cleaning)
-    const existingIds = new Set();
-    const existingIdsLines = existingIdsInput.split(/[\n,]+/).map(line => line.trim()).filter(line => line);
+    // Parse IDs
+    const newIds = parseIds(newIdsText);
+    const existingIds = new Set(parseIds(existingIdsText).map(id => id.toLowerCase()));
     
-    existingIdsLines.forEach(line => {
-        // Remove quotes (single or double) and trim
-        const cleanId = line.replace(/^["']|["']$/g, '').trim();
-        if (cleanId) {
-            existingIds.add(cleanId.toLowerCase()); // Case-insensitive comparison
-        }
-    });
-
     // Check for matches
-    const matches = [];
+    const duplicates = [];
     const unique = [];
     
     newIds.forEach(id => {
         if (existingIds.has(id.toLowerCase())) {
-            matches.push(id);
+            duplicates.push(id);
         } else {
             unique.push(id);
         }
     });
-
-    // Format output
-    let resultText = '';
     
-    if (matches.length > 0) {
-        resultText += '⚠️ ALREADY FEATURE FLAGGED (DO NOT ADD):\n';
-        resultText += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
-        matches.forEach(id => {
-            resultText += `❌ ${id}\n`;
+    // Format output
+    let result = '';
+    
+    if (duplicates.length > 0) {
+        result += '⚠️ ALREADY IN REPOSITORY (DO NOT ADD):\n';
+        result += '━'.repeat(50) + '\n\n';
+        duplicates.forEach(id => {
+            result += `❌ ${id}\n`;
         });
-        resultText += '\n\n';
+        result += '\n\n';
     }
-
+    
     if (unique.length > 0) {
-        resultText += '✓ NEW IDs (Safe to Add):\n';
-        resultText += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+        result += '✓ NEW IDs (SAFE TO ADD):\n';
+        result += '━'.repeat(50) + '\n\n';
         unique.forEach(id => {
-            resultText += `✓ ${id}\n`;
+            result += `✓ ${id}\n`;
         });
     }
-
-    if (matches.length === 0 && unique.length === 0) {
-        resultText = 'No IDs to check.';
-    }
-
-    elements.duplicatesArea.value = resultText;
+    
+    outputArea.value = result;
     
     // Update stats
-    if (matches.length > 0) {
-        elements.duplicatesStatsText.textContent = `⚠️ ${matches.length} duplicate${matches.length !== 1 ? 's' : ''} found | ${unique.length} new ID${unique.length !== 1 ? 's' : ''}`;
-        elements.duplicatesStatsText.style.color = 'var(--danger-color)';
-    } else if (unique.length > 0) {
-        elements.duplicatesStatsText.textContent = `✓ All ${unique.length} ID${unique.length !== 1 ? 's are' : ' is'} new`;
-        elements.duplicatesStatsText.style.color = 'var(--success-color)';
+    if (duplicates.length > 0) {
+        statsEl.textContent = `⚠️ ${duplicates.length} duplicate${duplicates.length !== 1 ? 's' : ''} | ${unique.length} new`;
+        statsEl.style.color = 'var(--danger-color)';
     } else {
-        elements.duplicatesStatsText.textContent = '';
+        statsEl.textContent = `✓ All ${unique.length} ID${unique.length !== 1 ? 's are' : ' is'} new`;
+        statsEl.style.color = 'var(--success-color)';
     }
 }
 
-// Copy to clipboard
-async function copyToClipboard() {
-    const text = elements.outputArea.value;
+// Parse IDs from text (handles various formats)
+function parseIds(text) {
+    const ids = [];
+    const lines = text.split(/[\n,]+/);
+    
+    lines.forEach(line => {
+        const trimmed = line.trim().replace(/^["']|["']$/g, ''); // Remove quotes
+        if (trimmed) {
+            ids.push(trimmed);
+        }
+    });
+    
+    return ids;
+}
+
+// Copy output to clipboard
+async function copyOutput(section) {
+    const outputArea = document.getElementById(`${section}-output`);
+    const text = outputArea.value;
     
     if (!text) {
-        showNotification('Nothing to copy!', 'warning');
+        showNotification('⚠️ Nothing to copy', 'warning');
         return;
     }
-
-    try {
-        await navigator.clipboard.writeText(text);
-        showNotification('✓ Copied to clipboard!', 'success');
-    } catch (err) {
-        // Fallback for older browsers
-        elements.outputArea.select();
-        document.execCommand('copy');
-        showNotification('✓ Copied to clipboard!', 'success');
-    }
-}
-
-// Copy duplicates to clipboard
-async function copyDuplicatesToClipboard() {
-    const text = elements.duplicatesArea.value;
     
-    if (!text) {
-        showNotification('Nothing to copy!', 'warning');
-        return;
-    }
-
     try {
         await navigator.clipboard.writeText(text);
-        showNotification('✓ Duplicates copied to clipboard!', 'success');
+        showNotification('✓ Copied to clipboard!');
     } catch (err) {
-        // Fallback for older browsers
-        elements.duplicatesArea.select();
+        // Fallback
+        outputArea.select();
         document.execCommand('copy');
-        showNotification('✓ Duplicates copied to clipboard!', 'success');
+        showNotification('✓ Copied to clipboard!');
     }
-}
-
-// Clear all
-function clearAll() {
-    elements.inputArea.value = '';
-    elements.outputArea.value = '';
-    elements.duplicatesArea.value = '';
-    if (elements.existingIdsArea) {
-        elements.existingIdsArea.value = '';
-    }
-    elements.statsText.textContent = '';
-    elements.duplicatesStatsText.textContent = '';
-    state.categorizedIds = {
-        sustainability: [],
-        viewability: [],
-        both: [],
-        'third-party': [],
-        uncategorized: []
-    };
 }
 
 // Show notification
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
-    notification.className = 'copy-notification';
+    notification.className = 'notification';
     notification.textContent = message;
+    
+    if (type === 'warning') {
+        notification.style.background = 'var(--warning-color)';
+    } else if (type === 'error') {
+        notification.style.background = 'var(--danger-color)';
+    }
+    
     document.body.appendChild(notification);
-
+    
     setTimeout(() => {
         notification.style.animation = 'slideIn 0.3s ease-out reverse';
         setTimeout(() => notification.remove(), 300);
-    }, 2000);
+    }, 2500);
 }
-
-// Debounce helper
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// Load example
-function loadExample(exampleNum) {
-    const examples = {
-        '1': `xx_xxxxid1 -S
-xx_xxxxid2 -V
-xx_xxxxid3 -B
-account_123 -S
-account_456 -TP`,
-        '2': `tp_XXX1
-tp_XXX2
-tp_XXX3
-tp_XXX4`,
-        '3': `account_001, account_002, account_003, account_004, account_005`
-    };
-
-    elements.inputArea.value = examples[exampleNum] || '';
-    formatAndDisplay();
-    
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    showNotification('Example loaded!', 'success');
-}
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', init);
-

@@ -385,6 +385,8 @@ function getFormatOptions(section) {
         delimiter: document.getElementById(`${section}-delimiter`)?.value || 'comma-space',
         case: document.getElementById(`${section}-case`)?.value || 'none',
         trailingComma: document.getElementById(`${section}-trailing-comma`)?.checked || false,
+        includeComments: document.getElementById(`${section}-include-comments`)?.checked || false,
+        commentChar: document.getElementById(`${section}-comment-char`)?.value || '#',
         sort: false, // Sorting removed - always false
         removeDuplicates: document.getElementById(`${section}-remove-duplicates`)?.checked || false
     };
@@ -416,8 +418,8 @@ function formatData(data, options) {
         id: applyCaseConversion(item.id, options.case)
     }));
     
-    // Format each item with account name as comment
-    const formattedItems = items.map(item => {
+    // Format each item
+    const formattedItems = items.map((item, index) => {
         let formattedId = item.id;
         
         // Apply quotes
@@ -427,9 +429,10 @@ function formatData(data, options) {
             formattedId = `'${formattedId}'`;
         }
         
-        // Add account name as comment (# syntax)
-        if (item.name && item.name.trim()) {
-            formattedId += `   # ${item.name}`;
+        // Add account name as comment AFTER the item (comma comes from delimiter)
+        if (options.includeComments && item.name && item.name.trim()) {
+            const commentChar = (options.commentChar || '#').trim();
+            formattedId += `   ${commentChar} ${item.name}`;
         }
         
         return formattedId;

@@ -139,6 +139,18 @@
                                     Trailing Comma
                                 </label>
                             </div>
+                            
+                            <div class="option-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="doubleverify-include-comments" checked>
+                                    Include Account Name Comments
+                                </label>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label>Comment Character</label>
+                                <input type="text" class="format-select" id="doubleverify-comment-char" value="#" maxlength="2" style="width: 60px;" placeholder="#">
+                            </div>
                         </div>
                     </div>
                     
@@ -245,6 +257,18 @@
                                     <input type="checkbox" id="third-party-trailing-comma" checked>
                                     Trailing Comma
                                 </label>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="third-party-include-comments" checked>
+                                    Include Account Name Comments
+                                </label>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label>Comment Character</label>
+                                <input type="text" class="format-select" id="third-party-comment-char" value="#" maxlength="2" style="width: 60px;" placeholder="#">
                             </div>
                         </div>
                     </div>
@@ -353,6 +377,15 @@
                                     <input type="checkbox" id="ias-trailing-comma">
                                     Trailing Comma
                                 </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="ias-add-comments" checked>
+                                    Comment Account Name
+                                </label>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label>Comment Character</label>
+                                <input type="text" class="format-input" id="ias-comment-char" value="#" placeholder="#" maxlength="2">
                             </div>
                         </div>
                     </div>
@@ -457,6 +490,15 @@
                                     <input type="checkbox" id="rmax-trailing-comma" checked>
                                     Trailing Comma
                                 </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="rmax-add-comments" checked>
+                                    Comment Account Name
+                                </label>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label>Comment Character</label>
+                                <input type="text" class="format-input" id="rmax-comment-char" value="#" placeholder="#" maxlength="2">
                             </div>
                         </div>
                     </div>
@@ -535,9 +577,18 @@
                                     Trailing Comma
                                 </label>
                                 <label class="checkbox-label">
+                                    <input type="checkbox" id="custom-add-comments" checked>
+                                    Comment Account Name
+                                </label>
+                                <label class="checkbox-label">
                                     <input type="checkbox" id="custom-remove-duplicates" checked>
                                     Remove Duplicates
                                 </label>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label>Comment Character</label>
+                                <input type="text" class="format-input" id="custom-comment-char" value="#" placeholder="#" maxlength="2">
                             </div>
                         </div>
                     </div>

@@ -412,7 +412,18 @@ header p {
     background: white;
 }
 
-.format-select:focus {
+.format-input {
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: border-color 0.2s;
+    background: white;
+    width: 100%;
+}
+
+.format-select:focus,
+.format-input:focus {
     outline: none;
     border-color: var(--primary-color);
 }

@@ -31,6 +31,9 @@
                 <button class="nav-tab" data-type="cardview">
                     <span class="tab-icon">🎴</span> Card View
                 </button>
+                <button class="nav-tab" data-type="disclaimer">
+                    <span class="tab-icon">📋</span> Disclaimer Text
+                </button>
                 <button class="nav-tab" data-type="custom">
                     <span class="tab-icon">⚙️</span> Custom
                 </button>
@@ -669,6 +672,124 @@
                         <div class="output-actions">
                             <button class="btn btn-success" onclick="copyJiraOutput('cardview')">📋 Copy Jira Links</button>
                             <span class="output-stats" id="cardview-jira-stats"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Disclaimer Text Section -->
+            <section class="ff-section" id="disclaimer-section">
+                <div class="section-header">
+                    <h2>📋 Disclaimer Text Feature Flag</h2>
+                </div>
+                
+                <div class="workflow-grid">
+                    <div class="workflow-card">
+                        <h3>Input IDs</h3>
+                        <div class="input-mode-toggle">
+                            <button class="mode-btn active" data-mode="table" data-section="disclaimer">📊 Table</button>
+                            <button class="mode-btn" data-mode="text" data-section="disclaimer">📝 Text</button>
+                        </div>
+                        
+                        <div class="table-input-container" id="disclaimer-table-input">
+                            <div class="table-wrapper">
+                                <table class="id-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Brand/Product Name</th>
+                                            <th>Jira Ticket ID</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="disclaimer-table-body">
+                                        <tr>
+                                            <td><input type="text" placeholder="t2_xxxxx" class="table-input"></td>
+                                            <td><input type="text" placeholder="Novo Nordisk - Ozempic" class="table-input"></td>
+                                            <td><input type="text" placeholder="AH-12345" class="table-input"></td>
+                                            <td><button class="btn-icon delete-row" title="Delete row">🗑️</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button class="btn btn-secondary btn-small" onclick="addTableRow('disclaimer')">+ Add Row</button>
+                            <button class="btn btn-secondary btn-small" onclick="pasteFromExcel('disclaimer')">📋 Paste from Excel</button>
+                        </div>
+                        
+                        <div class="text-input-container hidden" id="disclaimer-text-input">
+                            <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;t2_xxxxx&#10;a2_yyyyy&#10;&#10;With details (pipe-separated):&#10;t2_xxxxx | Novo Nordisk - Ozempic | AH-12345&#10;a2_yyyyy | AbbVie - SKYRIZI | AH-12346"></textarea>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="formatOutput('disclaimer')" style="margin-top: 1rem;">Format Output</button>
+                    </div>
+                    
+                    <div class="workflow-card">
+                        <h3>Format Options</h3>
+                        <div class="format-options">
+                            <div class="option-group">
+                                <label>Quote Style</label>
+                                <select class="format-select" id="disclaimer-quote">
+                                    <option value="none">None</option>
+                                    <option value="double">Double "ID"</option>
+                                    <option value="single">Single 'ID'</option>
+                                </select>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label>Delimiter</label>
+                                <select class="format-select" id="disclaimer-delimiter">
+                                    <option value="newline">New Line</option>
+                                    <option value="comma-newline">Comma + New Line</option>
+                                    <option value="comma-space">Comma + Space</option>
+                                    <option value="comma">Comma</option>
+                                    <option value="space">Space</option>
+                                </select>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label>Case</label>
+                                <select class="format-select" id="disclaimer-case">
+                                    <option value="none">Keep Original</option>
+                                    <option value="lower">lowercase</option>
+                                    <option value="upper">UPPERCASE</option>
+                                </select>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="disclaimer-trailing-comma">
+                                    Trailing Comma
+                                </label>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="disclaimer-include-comments" checked>
+                                    Include Account Name Comments
+                                </label>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label>Comment Character</label>
+                                <input type="text" class="format-select" id="disclaimer-comment-char" value="#" maxlength="2" style="width: 60px;" placeholder="#">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-card">
+                        <h3>IDs Output (YAML Format)</h3>
+                        <textarea class="output-area" id="disclaimer-output" readonly placeholder="Formatted IDs will appear here..."></textarea>
+                        <div class="output-actions">
+                            <button class="btn btn-success" onclick="copyOutput('disclaimer')">📋 Copy IDs</button>
+                            <button class="btn btn-secondary" onclick="sendToDuplicateChecker('disclaimer')">🔍 Check in Duplicates</button>
+                            <span class="output-stats" id="disclaimer-stats"></span>
+                        </div>
+                        
+                        <h3 style="margin-top: 2rem;">Jira Tickets for PR</h3>
+                        <textarea class="output-area jira-output" id="disclaimer-jira-output" readonly placeholder="Jira ticket markdown links will appear here..."></textarea>
+                        <div class="output-actions">
+                            <button class="btn btn-success" onclick="copyJiraOutput('disclaimer')">📋 Copy Jira Links</button>
+                            <span class="output-stats" id="disclaimer-jira-stats"></span>
                         </div>
                     </div>
                 </div>

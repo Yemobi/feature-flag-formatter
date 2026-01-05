@@ -162,6 +162,11 @@ function getColumnsForSection(section) {
             { placeholder: 't2_xxxxx' },
             { placeholder: 'Company Name' },
             { placeholder: 'AH-12345' }
+        ],
+        'disclaimer': [
+            { placeholder: 't2_xxxxx' },
+            { placeholder: 'Novo Nordisk - Ozempic' },
+            { placeholder: 'AH-12345' }
         ]
     };
     
@@ -225,7 +230,7 @@ function formatOutput(section) {
         return;
     }
     
-    const formatted = formatData(data, options);
+    const formatted = formatData(data, options, section);
     
     // Update IDs output
     const outputArea = document.getElementById(`${section}-output`);
@@ -253,7 +258,7 @@ function parseTextLine(line, section) {
         const parts = line.split('|').map(p => p.trim());
         
         // Different parsing based on section column structure
-        if (section === 'doubleverify' || section === 'third-party' || section === 'cardview') {
+        if (section === 'doubleverify' || section === 'third-party' || section === 'cardview' || section === 'disclaimer') {
             // 3 columns: ID | Account Name | Jira Ticket
             return {
                 id: parts[0] || '',
@@ -285,7 +290,7 @@ function parseTextLine(line, section) {
         const parts = line.split('\t').map(p => p.trim());
         
         // Same column logic for tabs
-        if (section === 'doubleverify' || section === 'third-party' || section === 'cardview') {
+        if (section === 'doubleverify' || section === 'third-party' || section === 'cardview' || section === 'disclaimer') {
             return {
                 id: parts[0] || '',
                 name: parts[1] || '',
@@ -336,7 +341,7 @@ function getInputData(section) {
             let rowData;
             
             // Different column mappings per section
-            if (section === 'doubleverify' || section === 'third-party' || section === 'cardview') {
+            if (section === 'doubleverify' || section === 'third-party' || section === 'cardview' || section === 'disclaimer') {
                 rowData = {
                     id: inputs[0]?.value.trim() || '',
                     name: inputs[1]?.value.trim() || '',
@@ -414,7 +419,7 @@ function getFormatOptions(section) {
 }
 
 // Format data according to options
-function formatData(data, options) {
+function formatData(data, options, section = '') {
     let items = [...data];
     
     // Remove duplicates
@@ -442,6 +447,9 @@ function formatData(data, options) {
     // Determine if delimiter contains comma
     const delimiterHasComma = options.delimiter.includes('comma');
     
+    // Check if this is the disclaimer section (needs YAML prefix)
+    const needsYAMLPrefix = section === 'disclaimer';
+    
     // Format each item
     const formattedItems = items.map((item, index) => {
         let formattedId = item.id;
@@ -464,6 +472,11 @@ function formatData(data, options) {
         if (options.includeComments && item.name && item.name.trim()) {
             const commentChar = (options.commentChar || '#').trim();
             formattedId += `   ${commentChar} ${item.name}`;
+        }
+        
+        // Add YAML prefix if needed (for disclaimer section)
+        if (needsYAMLPrefix) {
+            formattedId = `  - ${formattedId}`;
         }
         
         return formattedId;

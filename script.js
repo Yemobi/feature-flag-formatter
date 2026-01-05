@@ -449,7 +449,9 @@ function formatData(data, options) {
         }
         
         // If delimiter has comma, add comma NOW (before comment)
-        if (delimiterHasComma) {
+        // BUT only if not the last item, or if trailing comma is enabled
+        const isLastItem = index === items.length - 1;
+        if (delimiterHasComma && (!isLastItem || options.trailingComma)) {
             formattedId += ',';
         }
         
@@ -487,7 +489,7 @@ function formatData(data, options) {
             result = formattedItems.join(', ');
     }
     
-    // Add trailing comma (only if not already added by delimiter)
+    // Add trailing comma (only if delimiter doesn't have comma - since we already handled it above)
     if (options.trailingComma && formattedItems.length > 0 && !delimiterHasComma) {
         result += ',';
     }
@@ -530,8 +532,14 @@ function generateIASApiKeyOutput(data, options) {
     let result;
     const delimiterHasComma = options.delimiter.includes('comma');
     
-    // Add comma to each item if delimiter contains comma
-    const formattedPairs = pairs.map(pair => delimiterHasComma ? pair + ',' : pair);
+    // Add comma to each item if delimiter contains comma (but not to last item unless trailing comma enabled)
+    const formattedPairs = pairs.map((pair, index) => {
+        const isLastItem = index === pairs.length - 1;
+        if (delimiterHasComma && (!isLastItem || options.trailingComma)) {
+            return pair + ',';
+        }
+        return pair;
+    });
     
     switch (options.delimiter) {
         case 'comma-space':
@@ -553,7 +561,7 @@ function generateIASApiKeyOutput(data, options) {
             result = pairs.join(', ');
     }
     
-    // Add trailing comma if specified (and not already added)
+    // Add trailing comma if specified (and delimiter doesn't have comma - already handled above)
     if (options.trailingComma && !delimiterHasComma) {
         result += ',';
     }

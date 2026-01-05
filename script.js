@@ -360,11 +360,14 @@ function formatData(data, options) {
         case 'comma-space':
             result = formattedItems.join(', ');
             break;
+        case 'comma-newline':
+            result = formattedItems.join(',\n');
+            break;
         case 'comma':
             result = formattedItems.join(',');
             break;
         case 'newline':
-            result = formattedItems.join(',\n');
+            result = formattedItems.join('\n');
             break;
         case 'space':
             result = formattedItems.join(' ');

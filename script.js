@@ -202,6 +202,39 @@ function formatOutput(section) {
     showNotification('✓ Formatted successfully!');
 }
 
+// Parse a text line into structured data
+function parseTextLine(line) {
+    // Check if line contains pipe separator
+    if (line.includes('|')) {
+        const parts = line.split('|').map(p => p.trim());
+        return {
+            id: parts[0] || '',
+            name: parts[1] || '',
+            apiKey: parts[2] || '',
+            notes: parts[3] || ''
+        };
+    }
+    
+    // Check if line contains tab separator (from Excel)
+    if (line.includes('\t')) {
+        const parts = line.split('\t').map(p => p.trim());
+        return {
+            id: parts[0] || '',
+            name: parts[1] || '',
+            apiKey: parts[2] || '',
+            notes: parts[3] || ''
+        };
+    }
+    
+    // Simple format - just ID
+    return {
+        id: line,
+        name: '',
+        apiKey: '',
+        notes: ''
+    };
+}
+
 // Get input data from table or text
 function getInputData(section) {
     const data = [];
@@ -229,14 +262,14 @@ function getInputData(section) {
             }
         });
     } else if (textInput && !textInput.classList.contains('hidden')) {
-        // Get data from text area
+        // Get data from text area - supports multiple formats
         const textarea = textInput.querySelector('.text-input');
         const lines = textarea.value.split('\n').filter(line => line.trim());
         
         lines.forEach(line => {
             const trimmed = line.trim();
             if (trimmed) {
-                data.push({ id: trimmed, name: '', apiKey: '', notes: '' });
+                data.push(parseTextLine(trimmed));
             }
         });
     } else {
@@ -247,7 +280,7 @@ function getInputData(section) {
             lines.forEach(line => {
                 const trimmed = line.trim();
                 if (trimmed) {
-                    data.push({ id: trimmed, name: '', apiKey: '', notes: '' });
+                    data.push(parseTextLine(trimmed));
                 }
             });
         }

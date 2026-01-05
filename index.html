@@ -15,21 +15,34 @@
 
         <!-- Main Navigation Tabs -->
         <nav class="main-nav">
-            <button class="nav-tab active" data-type="doubleverify">
-                <span class="tab-icon">✓✓</span> DoubleVerify
-            </button>
-            <button class="nav-tab" data-type="third-party">
-                <span class="tab-icon">🔗</span> Third Party
-            </button>
-            <button class="nav-tab" data-type="ias">
-                <span class="tab-icon">🔐</span> IAS
-            </button>
-            <button class="nav-tab" data-type="custom">
-                <span class="tab-icon">⚙️</span> Custom
-            </button>
-            <button class="nav-tab" data-type="duplicates">
-                <span class="tab-icon">🔍</span> Check Duplicates
-            </button>
+            <div class="nav-left">
+                <button class="nav-tab active" data-type="doubleverify">
+                    <span class="tab-icon">✓✓</span> DoubleVerify
+                </button>
+                <button class="nav-tab" data-type="third-party">
+                    <span class="tab-icon">🔗</span> Third Party
+                </button>
+                <button class="nav-tab" data-type="ias">
+                    <span class="tab-icon">🔐</span> IAS
+                </button>
+                <button class="nav-tab" data-type="custom">
+                    <span class="tab-icon">⚙️</span> Custom
+                </button>
+                <button class="nav-tab" data-type="duplicates">
+                    <span class="tab-icon">🔍</span> Check Duplicates
+                </button>
+            </div>
+            
+            <div class="nav-right">
+                <label class="layout-selector">
+                    <span>Layout:</span>
+                    <select id="layoutSelector">
+                        <option value="middle">Middle (3 Column)</option>
+                        <option value="top">Top (Compact Options)</option>
+                        <option value="bottom">Bottom (Compact Options)</option>
+                    </select>
+                </label>
+            </div>
         </nav>
 
         <!-- Feature Flag Sections -->

@@ -7,6 +7,16 @@ function init() {
         tab.addEventListener('click', () => switchSection(tab.dataset.type));
     });
 
+    // Layout selector
+    const layoutSelector = document.getElementById('layoutSelector');
+    if (layoutSelector) {
+        layoutSelector.addEventListener('change', (e) => changeLayout(e.target.value));
+        // Load saved layout preference
+        const savedLayout = localStorage.getItem('preferredLayout') || 'middle';
+        layoutSelector.value = savedLayout;
+        changeLayout(savedLayout);
+    }
+
     // Input mode toggles
     document.querySelectorAll('.mode-btn').forEach(btn => {
         btn.addEventListener('click', () => toggleInputMode(btn));
@@ -27,6 +37,18 @@ function init() {
         duplicatesNewIds.addEventListener('input', () => checkDuplicates());
         duplicatesExistingIds.addEventListener('input', () => checkDuplicates());
     }
+}
+
+// Change layout mode
+function changeLayout(layout) {
+    // Save preference
+    localStorage.setItem('preferredLayout', layout);
+    
+    // Update all workflow grids
+    document.querySelectorAll('.workflow-grid').forEach(grid => {
+        grid.classList.remove('layout-top', 'layout-middle', 'layout-bottom');
+        grid.classList.add(`layout-${layout}`);
+    });
 }
 
 // Switch between feature flag sections

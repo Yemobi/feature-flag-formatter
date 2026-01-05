@@ -128,7 +128,7 @@ function addTableRow(section) {
 function getColumnsForSection(section) {
     const configs = {
         'doubleverify': [
-            { placeholder: 'account_001' },
+            { placeholder: 't2_xxxxx' },
             { placeholder: 'Company Name' },
             { placeholder: 'AH-12345' }
         ],
@@ -139,7 +139,7 @@ function getColumnsForSection(section) {
             { placeholder: 'AH-12345' }
         ],
         'ias': [
-            { placeholder: 'account_001' },
+            { placeholder: 't2_xxxxx' },
             { placeholder: 'Company Name' },
             { placeholder: 'IAS_KEY_abc123' },
             { placeholder: 'AH-12345' }

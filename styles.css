@@ -5,8 +5,8 @@
 }
 
 :root {
-    --primary-color: #6366f1;
-    --primary-hover: #4f46e5;
+    --primary-color: #FF4500;
+    --primary-hover: #D82400;
     --success-color: #10b981;
     --warning-color: #f59e0b;
     --danger-color: #ef4444;
@@ -21,7 +21,7 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #FF4500 0%, #D82400 100%);
     min-height: 100vh;
     padding: 2rem;
     color: var(--text-primary);
@@ -467,7 +467,7 @@ header p {
 
 .btn-primary:hover {
     background: var(--primary-hover);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 12px rgba(255, 69, 0, 0.4);
 }
 
 .btn-secondary {

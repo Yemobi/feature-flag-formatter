@@ -7,14 +7,25 @@ function init() {
         tab.addEventListener('click', () => switchSection(tab.dataset.type));
     });
 
-    // Layout selector
-    const layoutSelector = document.getElementById('layoutSelector');
-    if (layoutSelector) {
-        layoutSelector.addEventListener('change', (e) => changeLayout(e.target.value));
-        // Load saved layout preference
-        const savedLayout = localStorage.getItem('preferredLayout') || 'middle';
-        layoutSelector.value = savedLayout;
-        changeLayout(savedLayout);
+    // Layout selector buttons
+    document.querySelectorAll('.layout-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const layout = btn.dataset.layout;
+            changeLayout(layout);
+            // Update active state
+            document.querySelectorAll('.layout-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+    
+    // Load saved layout preference
+    const savedLayout = localStorage.getItem('preferredLayout') || 'top';
+    changeLayout(savedLayout);
+    // Set active button
+    const activeBtn = document.querySelector(`.layout-btn[data-layout="${savedLayout}"]`);
+    if (activeBtn) {
+        document.querySelectorAll('.layout-btn').forEach(b => b.classList.remove('active'));
+        activeBtn.classList.add('active');
     }
 
     // Input mode toggles
@@ -44,9 +55,9 @@ function changeLayout(layout) {
     // Save preference
     localStorage.setItem('preferredLayout', layout);
     
-    // Update all workflow grids
+    // Update all workflow grids (only top or bottom, no middle)
     document.querySelectorAll('.workflow-grid').forEach(grid => {
-        grid.classList.remove('layout-top', 'layout-middle', 'layout-bottom');
+        grid.classList.remove('layout-top', 'layout-bottom');
         grid.classList.add(`layout-${layout}`);
     });
 }

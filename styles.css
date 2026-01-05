@@ -81,25 +81,48 @@ header p {
     align-items: center;
     gap: 0.5rem;
     font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--text-secondary);
     white-space: nowrap;
 }
 
-.layout-selector select {
-    padding: 0.5rem 1rem;
-    border: 2px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    background: white;
-    transition: border-color 0.2s;
+.layout-label {
+    font-weight: 600;
+    color: var(--text-secondary);
 }
 
-.layout-selector select:focus {
-    outline: none;
-    border-color: var(--primary-color);
+.layout-icons {
+    display: flex;
+    gap: 0.25rem;
+    background: var(--bg-color);
+    padding: 0.25rem;
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+}
+
+.layout-btn {
+    padding: 0.4rem 0.6rem;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+}
+
+.layout-btn:hover {
+    background: rgba(255, 69, 0, 0.1);
+    color: var(--primary-color);
+}
+
+.layout-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.layout-btn svg {
+    display: block;
 }
 
 .nav-tab {

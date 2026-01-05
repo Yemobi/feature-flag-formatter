@@ -37,14 +37,25 @@
             </div>
             
             <div class="nav-right">
-                <label class="layout-selector">
-                    <span>Layout:</span>
-                    <select id="layoutSelector">
-                        <option value="middle">Middle (3 Column)</option>
-                        <option value="top">Top (Compact Options)</option>
-                        <option value="bottom">Bottom (Compact Options)</option>
-                    </select>
-                </label>
+                <div class="layout-selector">
+                    <span class="layout-label">Layout:</span>
+                    <div class="layout-icons">
+                        <button class="layout-btn active" data-layout="top" title="Format Options on Top">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="2" width="20" height="6" rx="1"/>
+                                <rect x="2" y="10" width="9" height="12" rx="1"/>
+                                <rect x="13" y="10" width="9" height="12" rx="1"/>
+                            </svg>
+                        </button>
+                        <button class="layout-btn" data-layout="bottom" title="Format Options on Bottom">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="2" width="9" height="12" rx="1"/>
+                                <rect x="13" y="2" width="9" height="12" rx="1"/>
+                                <rect x="2" y="16" width="20" height="6" rx="1"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
             </div>
         </nav>
 

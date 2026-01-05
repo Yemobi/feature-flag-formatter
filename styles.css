@@ -55,13 +55,12 @@ header p {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
     margin-bottom: 2rem;
     background: white;
     padding: 1rem;
     border-radius: 12px;
     box-shadow: var(--shadow-lg);
-    flex-wrap: wrap;
 }
 
 .nav-left {
@@ -74,6 +73,7 @@ header p {
 .nav-right {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .layout-selector {
@@ -83,6 +83,7 @@ header p {
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--text-secondary);
+    white-space: nowrap;
 }
 
 .layout-selector select {
@@ -102,8 +103,6 @@ header p {
 }
 
 .nav-tab {
-    flex: 1;
-    min-width: 140px;
     padding: 1rem 1.5rem;
     border: 2px solid transparent;
     background: var(--bg-color);
@@ -117,6 +116,7 @@ header p {
     justify-content: center;
     gap: 0.5rem;
     color: var(--text-secondary);
+    white-space: nowrap;
 }
 
 .nav-tab:hover {
@@ -169,7 +169,7 @@ header p {
     font-size: 0.95rem;
 }
 
-/* Workflow Grid */
+/* Workflow Grid - Default Middle Layout */
 .workflow-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -178,59 +178,62 @@ header p {
 
 /* Layout: Top (Format options at top) */
 .workflow-grid.layout-top {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
     gap: 2rem;
 }
 
+.workflow-grid.layout-top .workflow-card:nth-child(1) {
+    grid-column: 1;
+    grid-row: 2;
+}
+
 .workflow-grid.layout-top .workflow-card:nth-child(2) {
-    order: -1; /* Move format options to top */
+    grid-column: 1 / -1;
+    grid-row: 1;
 }
 
-.workflow-grid.layout-top .workflow-card:nth-child(1),
 .workflow-grid.layout-top .workflow-card:nth-child(3) {
-    flex: 1;
-}
-
-.layout-top > .workflow-card:nth-child(1),
-.layout-top > .workflow-card:nth-child(3) {
-    display: inline-block;
-    width: calc(50% - 1rem);
-    vertical-align: top;
-}
-
-.layout-top > .workflow-card:nth-child(1) {
-    margin-right: 2rem;
+    grid-column: 2;
+    grid-row: 2;
 }
 
 /* Layout: Bottom (Format options at bottom) */
 .workflow-grid.layout-bottom {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr auto;
     gap: 2rem;
 }
 
+.workflow-grid.layout-bottom .workflow-card:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1;
+}
+
 .workflow-grid.layout-bottom .workflow-card:nth-child(2) {
-    order: 3; /* Move format options to bottom */
+    grid-column: 1 / -1;
+    grid-row: 2;
 }
 
-.layout-bottom > .workflow-card:nth-child(1),
-.layout-bottom > .workflow-card:nth-child(3) {
-    display: inline-block;
-    width: calc(50% - 1rem);
-    vertical-align: top;
-}
-
-.layout-bottom > .workflow-card:nth-child(1) {
-    margin-right: 2rem;
+.workflow-grid.layout-bottom .workflow-card:nth-child(3) {
+    grid-column: 2;
+    grid-row: 1;
 }
 
 /* Format options in top/bottom layout should be horizontal */
 .workflow-grid.layout-top .workflow-card:nth-child(2) .format-options,
 .workflow-grid.layout-bottom .workflow-card:nth-child(2) .format-options {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
+    align-items: start;
+}
+
+.workflow-grid.layout-top .workflow-card:nth-child(2) .option-group,
+.workflow-grid.layout-bottom .workflow-card:nth-child(2) .option-group {
+    margin-bottom: 0;
 }
 
 .workflow-grid.layout-top .workflow-card:nth-child(2) .btn-primary,
@@ -562,17 +565,22 @@ header p {
 
 /* Responsive Design */
 @media (max-width: 1400px) {
-    .workflow-grid {
+    .workflow-grid,
+    .workflow-grid.layout-top,
+    .workflow-grid.layout-bottom {
         grid-template-columns: 1fr;
     }
     
-    .layout-top > .workflow-card:nth-child(1),
-    .layout-top > .workflow-card:nth-child(3),
-    .layout-bottom > .workflow-card:nth-child(1),
-    .layout-bottom > .workflow-card:nth-child(3) {
-        width: 100%;
-        margin-right: 0;
-        margin-bottom: 2rem;
+    .workflow-grid.layout-top .workflow-card:nth-child(1),
+    .workflow-grid.layout-top .workflow-card:nth-child(2),
+    .workflow-grid.layout-top .workflow-card:nth-child(3) {
+        grid-column: 1;
+    }
+    
+    .workflow-grid.layout-bottom .workflow-card:nth-child(1),
+    .workflow-grid.layout-bottom .workflow-card:nth-child(2),
+    .workflow-grid.layout-bottom .workflow-card:nth-child(3) {
+        grid-column: 1;
     }
 }
 
@@ -589,19 +597,20 @@ header p {
         padding: 0.75rem;
         flex-direction: column;
         align-items: stretch;
+        gap: 1rem;
     }
     
-    .nav-left, .nav-right {
+    .nav-left {
         width: 100%;
+        flex-direction: column;
     }
     
     .nav-right {
-        margin-top: 0.5rem;
+        width: 100%;
         justify-content: center;
     }
     
     .nav-tab {
-        min-width: auto;
         padding: 0.75rem 1rem;
         font-size: 0.875rem;
     }
@@ -614,11 +623,8 @@ header p {
         grid-template-columns: 1fr;
     }
     
-    .layout-top > .workflow-card:nth-child(1),
-    .layout-top > .workflow-card:nth-child(3),
-    .layout-bottom > .workflow-card:nth-child(1),
-    .layout-bottom > .workflow-card:nth-child(3) {
-        width: 100%;
-        display: block;
+    .workflow-grid.layout-top .format-options,
+    .workflow-grid.layout-bottom .format-options {
+        grid-template-columns: 1fr;
     }
 }

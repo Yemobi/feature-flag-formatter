@@ -248,12 +248,32 @@ function getInputData(section) {
         
         rows.forEach(row => {
             const inputs = row.querySelectorAll('.table-input');
-            const rowData = {
-                id: inputs[0]?.value.trim() || '',
-                name: inputs[1]?.value.trim() || '',
-                apiKey: inputs[2]?.value.trim() || '',
-                notes: inputs[3]?.value.trim() || ''
-            };
+            let rowData;
+            
+            // Different column mappings per section
+            if (section === 'doubleverify') {
+                rowData = {
+                    id: inputs[0]?.value.trim() || '',
+                    name: inputs[1]?.value.trim() || '',
+                    apiKey: '',
+                    notes: inputs[2]?.value.trim() || '' // Jira Ticket ID
+                };
+            } else if (section === 'third-party' || section === 'ias') {
+                rowData = {
+                    id: inputs[0]?.value.trim() || '',
+                    name: inputs[1]?.value.trim() || '',
+                    apiKey: inputs[2]?.value.trim() || '',
+                    notes: inputs[3]?.value.trim() || '' // Jira Ticket ID
+                };
+            } else {
+                // Default mapping
+                rowData = {
+                    id: inputs[0]?.value.trim() || '',
+                    name: inputs[1]?.value.trim() || '',
+                    apiKey: inputs[2]?.value.trim() || '',
+                    notes: inputs[3]?.value.trim() || ''
+                };
+            }
             
             if (rowData.id) {
                 data.push(rowData);

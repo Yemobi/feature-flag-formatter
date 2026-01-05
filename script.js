@@ -143,6 +143,10 @@ function getColumnsForSection(section) {
             { placeholder: 'Company Name' },
             { placeholder: 'IAS_KEY_abc123' },
             { placeholder: 'AH-12345' }
+        ],
+        'rmax': [
+            { placeholder: 'rmax_001' },
+            { placeholder: 'AH-12345' }
         ]
     };
     
@@ -279,6 +283,13 @@ function getInputData(section) {
                     name: inputs[1]?.value.trim() || '',
                     apiKey: '',
                     notes: inputs[2]?.value.trim() || '' // Jira Ticket ID
+                };
+            } else if (section === 'rmax') {
+                rowData = {
+                    id: inputs[0]?.value.trim() || '',
+                    name: '',
+                    apiKey: '',
+                    notes: inputs[1]?.value.trim() || '' // Jira Ticket ID
                 };
             } else if (section === 'third-party' || section === 'ias') {
                 rowData = {

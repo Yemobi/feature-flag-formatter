@@ -157,6 +157,11 @@ function getColumnsForSection(section) {
         'rmax': [
             { placeholder: 't2_xxxxx' },
             { placeholder: 'AH-12345' }
+        ],
+        'cardview': [
+            { placeholder: 't2_xxxxx' },
+            { placeholder: 'Company Name' },
+            { placeholder: 'AH-12345' }
         ]
     };
     
@@ -248,7 +253,7 @@ function parseTextLine(line, section) {
         const parts = line.split('|').map(p => p.trim());
         
         // Different parsing based on section column structure
-        if (section === 'doubleverify' || section === 'third-party') {
+        if (section === 'doubleverify' || section === 'third-party' || section === 'cardview') {
             // 3 columns: ID | Account Name | Jira Ticket
             return {
                 id: parts[0] || '',
@@ -280,7 +285,7 @@ function parseTextLine(line, section) {
         const parts = line.split('\t').map(p => p.trim());
         
         // Same column logic for tabs
-        if (section === 'doubleverify' || section === 'third-party') {
+        if (section === 'doubleverify' || section === 'third-party' || section === 'cardview') {
             return {
                 id: parts[0] || '',
                 name: parts[1] || '',
@@ -331,7 +336,7 @@ function getInputData(section) {
             let rowData;
             
             // Different column mappings per section
-            if (section === 'doubleverify' || section === 'third-party') {
+            if (section === 'doubleverify' || section === 'third-party' || section === 'cardview') {
                 rowData = {
                     id: inputs[0]?.value.trim() || '',
                     name: inputs[1]?.value.trim() || '',

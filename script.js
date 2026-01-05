@@ -135,7 +135,6 @@ function getColumnsForSection(section) {
         'third-party': [
             { placeholder: 't2_xxxxx' },
             { placeholder: 'Company Name' },
-            { placeholder: 'API Key' },
             { placeholder: 'AH-12345' }
         ],
         'ias': [
@@ -277,7 +276,7 @@ function getInputData(section) {
             let rowData;
             
             // Different column mappings per section
-            if (section === 'doubleverify') {
+            if (section === 'doubleverify' || section === 'third-party') {
                 rowData = {
                     id: inputs[0]?.value.trim() || '',
                     name: inputs[1]?.value.trim() || '',
@@ -291,7 +290,7 @@ function getInputData(section) {
                     apiKey: '',
                     notes: inputs[1]?.value.trim() || '' // Jira Ticket ID
                 };
-            } else if (section === 'third-party' || section === 'ias') {
+            } else if (section === 'ias') {
                 rowData = {
                     id: inputs[0]?.value.trim() || '',
                     name: inputs[1]?.value.trim() || '',
@@ -372,13 +371,13 @@ function formatData(data, options) {
         items.sort((a, b) => a.id.localeCompare(b.id));
     }
     
-    // Apply case conversion
+    // Apply case conversion to IDs only
     items = items.map(item => ({
         ...item,
         id: applyCaseConversion(item.id, options.case)
     }));
     
-    // Format each item (just IDs, no comments)
+    // Format each item with account name as comment
     const formattedItems = items.map(item => {
         let formattedId = item.id;
         
@@ -387,6 +386,11 @@ function formatData(data, options) {
             formattedId = `"${formattedId}"`;
         } else if (options.quote === 'single') {
             formattedId = `'${formattedId}'`;
+        }
+        
+        // Add account name as comment (# syntax)
+        if (item.name && item.name.trim()) {
+            formattedId += `   # ${item.name}`;
         }
         
         return formattedId;

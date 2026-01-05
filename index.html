@@ -96,6 +96,8 @@
                         <div class="text-input-container hidden" id="doubleverify-text-input">
                             <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;t2_xxxxx&#10;t2_yyyyy&#10;&#10;With details (pipe-separated):&#10;t2_xxxxx | Nike Inc | AH-12345&#10;t2_yyyyy | Adidas | AH-12346"></textarea>
                         </div>
+                        
+                        <button class="btn btn-primary" onclick="formatOutput('doubleverify')" style="margin-top: 1rem;">Format Output</button>
                     </div>
                     
                     <!-- Format Options -->
@@ -105,18 +107,18 @@
                             <div class="option-group">
                                 <label>Quote Style</label>
                                 <select class="format-select" id="doubleverify-quote">
+                                    <option value="none">None</option>
                                     <option value="double">Double "ID"</option>
                                     <option value="single">Single 'ID'</option>
-                                    <option value="none">None</option>
                                 </select>
                             </div>
                             
                             <div class="option-group">
                                 <label>Delimiter</label>
                                 <select class="format-select" id="doubleverify-delimiter">
+                                    <option value="comma">Comma</option>
                                     <option value="comma-space">Comma + Space</option>
                                     <option value="comma-newline">Comma + New Line</option>
-                                    <option value="comma">Comma</option>
                                     <option value="newline">New Line</option>
                                     <option value="space">Space</option>
                                 </select>
@@ -125,9 +127,9 @@
                             <div class="option-group">
                                 <label>Case</label>
                                 <select class="format-select" id="doubleverify-case">
+                                    <option value="lower">lowercase</option>
                                     <option value="none">Keep Original</option>
                                     <option value="upper">UPPERCASE</option>
-                                    <option value="lower">lowercase</option>
                                 </select>
                             </div>
                             
@@ -136,13 +138,7 @@
                                     <input type="checkbox" id="doubleverify-trailing-comma">
                                     Trailing Comma
                                 </label>
-                                <label class="checkbox-label">
-                                    <input type="checkbox" id="doubleverify-sort" checked>
-                                    Sort Alphabetically
-                                </label>
                             </div>
-                            
-                            <button class="btn btn-primary" onclick="formatOutput('doubleverify')">Format Output</button>
                         </div>
                     </div>
                     
@@ -187,7 +183,6 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Account Name</th>
-                                            <th>API Key</th>
                                             <th>Jira Ticket ID</th>
                                             <th></th>
                                         </tr>
@@ -196,7 +191,6 @@
                                         <tr>
                                             <td><input type="text" placeholder="t2_xxxxx" class="table-input"></td>
                                             <td><input type="text" placeholder="Company Name" class="table-input"></td>
-                                            <td><input type="text" placeholder="API Key" class="table-input"></td>
                                             <td><input type="text" placeholder="AH-12345" class="table-input"></td>
                                             <td><button class="btn-icon delete-row" title="Delete row">🗑️</button></td>
                                         </tr>
@@ -208,8 +202,10 @@
                         </div>
                         
                         <div class="text-input-container hidden" id="third-party-text-input">
-                            <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;t2_xxxxx&#10;t2_yyyyy&#10;&#10;With details (pipe-separated):&#10;t2_xxxxx | Company Name | API_KEY_123 | AH-12345&#10;t2_yyyyy | Another Co | API_KEY_456 | AH-12346"></textarea>
+                            <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;t2_xxxxx&#10;t2_yyyyy&#10;&#10;With details (pipe-separated):&#10;t2_xxxxx | Company Name | AH-12345&#10;t2_yyyyy | Another Co | AH-12346"></textarea>
                         </div>
+                        
+                        <button class="btn btn-primary" onclick="formatOutput('third-party')" style="margin-top: 1rem;">Format Output</button>
                     </div>
                     
                     <div class="workflow-card">
@@ -218,8 +214,8 @@
                             <div class="option-group">
                                 <label>Quote Style</label>
                                 <select class="format-select" id="third-party-quote">
-                                    <option value="single">Single 'ID'</option>
                                     <option value="double">Double "ID"</option>
+                                    <option value="single">Single 'ID'</option>
                                     <option value="none">None</option>
                                 </select>
                             </div>
@@ -238,9 +234,9 @@
                             <div class="option-group">
                                 <label>Case</label>
                                 <select class="format-select" id="third-party-case">
-                                    <option value="upper">UPPERCASE</option>
-                                    <option value="none">Keep Original</option>
                                     <option value="lower">lowercase</option>
+                                    <option value="none">Keep Original</option>
+                                    <option value="upper">UPPERCASE</option>
                                 </select>
                             </div>
                             
@@ -249,13 +245,7 @@
                                     <input type="checkbox" id="third-party-trailing-comma" checked>
                                     Trailing Comma
                                 </label>
-                                <label class="checkbox-label">
-                                    <input type="checkbox" id="third-party-sort" checked>
-                                    Sort Alphabetically
-                                </label>
                             </div>
-                            
-                            <button class="btn btn-primary" onclick="formatOutput('third-party')">Format Output</button>
                         </div>
                     </div>
                     

@@ -226,27 +226,66 @@ function formatOutput(section) {
 }
 
 // Parse a text line into structured data
-function parseTextLine(line) {
+function parseTextLine(line, section) {
     // Check if line contains pipe separator
     if (line.includes('|')) {
         const parts = line.split('|').map(p => p.trim());
-        return {
-            id: parts[0] || '',
-            name: parts[1] || '',
-            apiKey: parts[2] || '',
-            notes: parts[3] || ''
-        };
+        
+        // Different parsing based on section column structure
+        if (section === 'doubleverify' || section === 'third-party') {
+            // 3 columns: ID | Account Name | Jira Ticket
+            return {
+                id: parts[0] || '',
+                name: parts[1] || '',
+                apiKey: '',
+                notes: parts[2] || ''
+            };
+        } else if (section === 'rmax') {
+            // 2 columns: ID | Jira Ticket
+            return {
+                id: parts[0] || '',
+                name: '',
+                apiKey: '',
+                notes: parts[1] || ''
+            };
+        } else {
+            // 4 columns (IAS or default): ID | Account Name | API Key | Jira Ticket
+            return {
+                id: parts[0] || '',
+                name: parts[1] || '',
+                apiKey: parts[2] || '',
+                notes: parts[3] || ''
+            };
+        }
     }
     
     // Check if line contains tab separator (from Excel)
     if (line.includes('\t')) {
         const parts = line.split('\t').map(p => p.trim());
-        return {
-            id: parts[0] || '',
-            name: parts[1] || '',
-            apiKey: parts[2] || '',
-            notes: parts[3] || ''
-        };
+        
+        // Same column logic for tabs
+        if (section === 'doubleverify' || section === 'third-party') {
+            return {
+                id: parts[0] || '',
+                name: parts[1] || '',
+                apiKey: '',
+                notes: parts[2] || ''
+            };
+        } else if (section === 'rmax') {
+            return {
+                id: parts[0] || '',
+                name: '',
+                apiKey: '',
+                notes: parts[1] || ''
+            };
+        } else {
+            return {
+                id: parts[0] || '',
+                name: parts[1] || '',
+                apiKey: parts[2] || '',
+                notes: parts[3] || ''
+            };
+        }
     }
     
     // Simple format - just ID
@@ -319,7 +358,7 @@ function getInputData(section) {
         lines.forEach(line => {
             const trimmed = line.trim();
             if (trimmed) {
-                data.push(parseTextLine(trimmed));
+                data.push(parseTextLine(trimmed, section));
             }
         });
     } else {
@@ -330,7 +369,7 @@ function getInputData(section) {
             lines.forEach(line => {
                 const trimmed = line.trim();
                 if (trimmed) {
-                    data.push(parseTextLine(trimmed));
+                    data.push(parseTextLine(trimmed, section));
                 }
             });
         }
@@ -436,10 +475,14 @@ function generateJiraOutput(section, data) {
     // Extract unique Jira tickets
     const jiraTickets = new Set();
     data.forEach(item => {
-        // Jira ticket is in the 'notes' field (3rd column)
+        // Jira ticket is in the 'notes' field
         const ticket = item.notes?.trim();
-        if (ticket && ticket.match(/^[A-Z]+-\d+$/)) { // Matches pattern like AH-12345
-            jiraTickets.add(ticket);
+        if (ticket) {
+            // Extract Jira ticket pattern (e.g., AH-12345) - more lenient matching
+            const match = ticket.match(/[A-Z]+-\d+/);
+            if (match) {
+                jiraTickets.add(match[0]);
+            }
         }
     });
     

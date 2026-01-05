@@ -160,7 +160,7 @@
                             
                             <div class="option-group">
                                 <label class="checkbox-label">
-                                    <input type="checkbox" id="doubleverify-include-comments" checked>
+                                    <input type="checkbox" id="doubleverify-include-comments">
                                     Include Account Name Comments
                                 </label>
                             </div>
@@ -279,7 +279,7 @@
                             
                             <div class="option-group">
                                 <label class="checkbox-label">
-                                    <input type="checkbox" id="third-party-include-comments" checked>
+                                    <input type="checkbox" id="third-party-include-comments">
                                     Include Account Name Comments
                                 </label>
                             </div>
@@ -518,9 +518,12 @@
                                     <input type="checkbox" id="rmax-trailing-comma" checked>
                                     Trailing Comma
                                 </label>
+                            </div>
+                            
+                            <div class="option-group">
                                 <label class="checkbox-label">
-                                    <input type="checkbox" id="rmax-add-comments" checked>
-                                    Comment Account Name
+                                    <input type="checkbox" id="rmax-include-comments">
+                                    Include Account Name Comments
                                 </label>
                             </div>
                             
@@ -604,13 +607,12 @@
                                     <input type="checkbox" id="custom-trailing-comma">
                                     Trailing Comma
                                 </label>
+                            </div>
+                            
+                            <div class="option-group">
                                 <label class="checkbox-label">
-                                    <input type="checkbox" id="custom-add-comments" checked>
-                                    Comment Account Name
-                                </label>
-                                <label class="checkbox-label">
-                                    <input type="checkbox" id="custom-remove-duplicates" checked>
-                                    Remove Duplicates
+                                    <input type="checkbox" id="custom-include-comments">
+                                    Include Account Name Comments
                                 </label>
                             </div>
                             
@@ -626,6 +628,7 @@
                         <textarea class="output-area" id="custom-output" readonly placeholder="Formatted output will appear here..."></textarea>
                         <div class="output-actions">
                             <button class="btn btn-success" onclick="copyOutput('custom')">📋 Copy to Clipboard</button>
+                            <button class="btn btn-secondary" onclick="sendToDuplicateChecker('custom')">🔍 Check in Duplicates</button>
                             <span class="output-stats" id="custom-stats"></span>
                         </div>
                     </div>

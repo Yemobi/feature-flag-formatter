@@ -133,7 +133,7 @@ function getColumnsForSection(section) {
             { placeholder: 'AH-12345' }
         ],
         'third-party': [
-            { placeholder: 'tp_XXX1' },
+            { placeholder: 't2_xxxxx' },
             { placeholder: 'Company Name' },
             { placeholder: 'API Key' },
             { placeholder: 'AH-12345' }
@@ -145,7 +145,7 @@ function getColumnsForSection(section) {
             { placeholder: 'AH-12345' }
         ],
         'rmax': [
-            { placeholder: 'rmax_001' },
+            { placeholder: 't2_xxxxx' },
             { placeholder: 'AH-12345' }
         ]
     };
@@ -589,6 +589,32 @@ async function copyOutput(section) {
         outputArea.select();
         document.execCommand('copy');
         showNotification('✓ Copied to clipboard!');
+    }
+}
+
+// Send output to duplicate checker
+function sendToDuplicateChecker(section) {
+    const outputArea = document.getElementById(`${section}-output`);
+    const text = outputArea.value;
+    
+    if (!text) {
+        showNotification('⚠️ No IDs to check', 'warning');
+        return;
+    }
+    
+    // Switch to duplicates tab
+    switchSection('duplicates');
+    
+    // Paste into "New IDs" field
+    const duplicatesNewIds = document.getElementById('duplicates-new-ids');
+    if (duplicatesNewIds) {
+        duplicatesNewIds.value = text;
+        // Trigger check
+        checkDuplicates();
+        showNotification('✓ IDs sent to duplicate checker!');
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
 

@@ -152,6 +152,7 @@
                         <textarea class="output-area" id="doubleverify-output" readonly placeholder="Formatted IDs will appear here..."></textarea>
                         <div class="output-actions">
                             <button class="btn btn-success" onclick="copyOutput('doubleverify')">📋 Copy IDs</button>
+                            <button class="btn btn-secondary" onclick="sendToDuplicateChecker('doubleverify')">🔍 Check in Duplicates</button>
                             <span class="output-stats" id="doubleverify-stats"></span>
                         </div>
                         
@@ -193,7 +194,7 @@
                                     </thead>
                                     <tbody id="third-party-table-body">
                                         <tr>
-                                            <td><input type="text" placeholder="tp_XXX1" class="table-input"></td>
+                                            <td><input type="text" placeholder="t2_xxxxx" class="table-input"></td>
                                             <td><input type="text" placeholder="Company Name" class="table-input"></td>
                                             <td><input type="text" placeholder="API Key" class="table-input"></td>
                                             <td><input type="text" placeholder="AH-12345" class="table-input"></td>
@@ -207,7 +208,7 @@
                         </div>
                         
                         <div class="text-input-container hidden" id="third-party-text-input">
-                            <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;tp_XXX1&#10;tp_XXX2&#10;&#10;With details (pipe-separated):&#10;tp_XXX1 | Company Name | API_KEY_123 | AH-12345&#10;tp_XXX2 | Another Co | API_KEY_456 | AH-12346"></textarea>
+                            <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;t2_xxxxx&#10;t2_yyyyy&#10;&#10;With details (pipe-separated):&#10;t2_xxxxx | Company Name | API_KEY_123 | AH-12345&#10;t2_yyyyy | Another Co | API_KEY_456 | AH-12346"></textarea>
                         </div>
                     </div>
                     
@@ -263,6 +264,7 @@
                         <textarea class="output-area" id="third-party-output" readonly placeholder="Formatted IDs will appear here..."></textarea>
                         <div class="output-actions">
                             <button class="btn btn-success" onclick="copyOutput('third-party')">📋 Copy IDs</button>
+                            <button class="btn btn-secondary" onclick="sendToDuplicateChecker('third-party')">🔍 Check in Duplicates</button>
                             <span class="output-stats" id="third-party-stats"></span>
                         </div>
                         
@@ -374,6 +376,7 @@
                         <textarea class="output-area" id="ias-output" readonly placeholder="Formatted IDs will appear here..."></textarea>
                         <div class="output-actions">
                             <button class="btn btn-success" onclick="copyOutput('ias')">📋 Copy IDs</button>
+                            <button class="btn btn-secondary" onclick="sendToDuplicateChecker('ias')">🔍 Check in Duplicates</button>
                             <span class="output-stats" id="ias-stats"></span>
                         </div>
                         
@@ -413,7 +416,7 @@
                                     </thead>
                                     <tbody id="rmax-table-body">
                                         <tr>
-                                            <td><input type="text" placeholder="rmax_001" class="table-input"></td>
+                                            <td><input type="text" placeholder="t2_xxxxx" class="table-input"></td>
                                             <td><input type="text" placeholder="AH-12345" class="table-input"></td>
                                             <td><button class="btn-icon delete-row" title="Delete row">🗑️</button></td>
                                         </tr>
@@ -425,7 +428,7 @@
                         </div>
                         
                         <div class="text-input-container hidden" id="rmax-text-input">
-                            <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;rmax_001&#10;rmax_002&#10;&#10;With Jira ticket (pipe-separated):&#10;rmax_001 | AH-12345&#10;rmax_002 | AH-12346"></textarea>
+                            <textarea class="text-input" placeholder="Paste IDs here - supports multiple formats:&#10;&#10;Simple:&#10;t2_xxxxx&#10;t2_yyyyy&#10;&#10;With Jira ticket (pipe-separated):&#10;t2_xxxxx | AH-12345&#10;t2_yyyyy | AH-12346"></textarea>
                         </div>
                     </div>
                     
@@ -481,6 +484,7 @@
                         <textarea class="output-area" id="rmax-output" readonly placeholder="Formatted IDs will appear here..."></textarea>
                         <div class="output-actions">
                             <button class="btn btn-success" onclick="copyOutput('rmax')">📋 Copy IDs</button>
+                            <button class="btn btn-secondary" onclick="sendToDuplicateChecker('rmax')">🔍 Check in Duplicates</button>
                             <span class="output-stats" id="rmax-stats"></span>
                         </div>
                         

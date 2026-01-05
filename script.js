@@ -55,9 +55,9 @@ function changeLayout(layout) {
     // Save preference
     localStorage.setItem('preferredLayout', layout);
     
-    // Update all workflow grids (only top or bottom, no middle)
+    // Update all workflow grids (top, middle, or bottom)
     document.querySelectorAll('.workflow-grid').forEach(grid => {
-        grid.classList.remove('layout-top', 'layout-bottom');
+        grid.classList.remove('layout-top', 'layout-middle', 'layout-bottom');
         grid.classList.add(`layout-${layout}`);
     });
 }

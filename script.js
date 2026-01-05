@@ -418,6 +418,9 @@ function formatData(data, options) {
         id: applyCaseConversion(item.id, options.case)
     }));
     
+    // Determine if delimiter contains comma
+    const delimiterHasComma = options.delimiter.includes('comma');
+    
     // Format each item
     const formattedItems = items.map((item, index) => {
         let formattedId = item.id;
@@ -429,7 +432,12 @@ function formatData(data, options) {
             formattedId = `'${formattedId}'`;
         }
         
-        // Add account name as comment AFTER the item (comma comes from delimiter)
+        // If delimiter has comma, add comma NOW (before comment)
+        if (delimiterHasComma) {
+            formattedId += ',';
+        }
+        
+        // Add account name as comment AFTER comma
         if (options.includeComments && item.name && item.name.trim()) {
             const commentChar = (options.commentChar || '#').trim();
             formattedId += `   ${commentChar} ${item.name}`;
@@ -438,17 +446,20 @@ function formatData(data, options) {
         return formattedId;
     });
     
-    // Join with delimiter
+    // Join with delimiter (but strip comma from delimiter since we already added it)
     let result;
     switch (options.delimiter) {
         case 'comma-space':
-            result = formattedItems.join(', ');
+            // Comma already added, just join with space
+            result = delimiterHasComma ? formattedItems.join(' ') : formattedItems.join(', ');
             break;
         case 'comma-newline':
-            result = formattedItems.join(',\n');
+            // Comma already added, just join with newline
+            result = delimiterHasComma ? formattedItems.join('\n') : formattedItems.join(',\n');
             break;
         case 'comma':
-            result = formattedItems.join(',');
+            // Comma already added, just concatenate
+            result = delimiterHasComma ? formattedItems.join('') : formattedItems.join(',');
             break;
         case 'newline':
             result = formattedItems.join('\n');
@@ -460,8 +471,8 @@ function formatData(data, options) {
             result = formattedItems.join(', ');
     }
     
-    // Add trailing comma
-    if (options.trailingComma && formattedItems.length > 0) {
+    // Add trailing comma (only if not already added by delimiter)
+    if (options.trailingComma && formattedItems.length > 0 && !delimiterHasComma) {
         result += ',';
     }
     

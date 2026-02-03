@@ -47,3 +47,14 @@ node_modules/
 *.tmp
 temp/
 
+# Other projects (not part of Feature Flag Formatter)
+Neo Cities/
+Simple-Store-Manual-Pixel/
+archives/
+browser-extension/
+documentation/
+feature-flag-formatter-check/
+website/
+Reddit-Pixel-Training-Complete.md
+Reddit-Pixel-Training-Copy-Paste-Ready.md
+Reddit-Pixel-Training-Marp.md

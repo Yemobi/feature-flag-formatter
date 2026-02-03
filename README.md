@@ -5,33 +5,87 @@ A modern web-based tool designed to streamline feature flagging workflows by int
 ![Feature Flag ID Formatter](https://img.shields.io/badge/status-active-success.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
+🌐 **Live Demo**: [https://yemobi.github.io/feature-flag-formatter/](https://yemobi.github.io/feature-flag-formatter/)
+
 ## 🎯 Purpose
 
-This tool solves the common challenge of formatting account IDs for feature flag configurations across different flag types (Sustainability, Viewability, Third-party) with varying format requirements (quotes, delimiters, case sensitivity).
+This tool solves the common challenge of formatting account IDs for feature flag configurations across different flag types with varying format requirements (quotes, delimiters, case sensitivity, special formats like YAML).
 
 ## ✨ Features
 
-### Smart Categorization
-- **Tag-based Organization**: Add tags to IDs as you paste them:
-  - `-S` or `-Sustainability` for Sustainability flags
-  - `-V` or `-Viewability` for Viewability flags
-  - `-B` or `-Both` for IDs that apply to both categories
-  - `-TP` or `-ThirdParty` for third-party advertiser flags
-- **Automatic Categorization**: IDs are automatically sorted into their respective categories
-- **Multi-category Output**: View all categories together or individually
+### 🏷️ Dedicated Feature Flag Tabs
 
-### Flexible Formatting Options
+Each feature flag type has its own dedicated workspace with customized inputs and outputs:
+
+#### 1. **✓✓ DoubleVerify**
+- Format account IDs for DoubleVerify feature flags
+- Support for Sustainability and Viewability categorization
+- Default: lowercase, comma delimiter
+
+#### 2. **🔗 Third Party Advertiser**
+- Format third-party advertiser IDs
+- Default: lowercase, double quotes, comma + newline, trailing comma
+- Includes account name comments by default
+
+#### 3. **🔐 IAS (Integral Ad Science)**
+- Special support for IAS API keys
+- Generates both ID lists and ID:APIKey pairs
+- 4-column input: ID, Account Name, IAS API Key, Jira Ticket ID
+
+#### 4. **📺 RMAX**
+- Simplified 2-column input: ID and Jira Ticket ID
+- Default: double quotes, comma + space, trailing comma
+
+#### 5. **🎴 Card View**
+- Format IDs for card view feature flags
+- Default: double quotes, comma + newline, trailing comma
+
+#### 6. **📋 Disclaimer Text**
+- **NEW!** Special YAML list format with comments
+- Output format: `  - t2_xxxxx   # Account Name`
+- Perfect for YAML configuration files
+- Default: no quotes, newline delimiter, includes comments
+
+### 🆕 New Features
+
+#### **Resource Link Placeholders**
+Each tab now includes editable placeholders for quick reference:
+- **Github repo:** Click to add your repository URL
+- **Confluence docs:** Click to add your documentation URL
+
+These links are editable directly in the interface - just click and type!
+
+#### **Example Output Previews**
+Each output area now shows example formatting so you know exactly what to expect:
+- See format examples before you input data
+- Understand quote styles, delimiters, and special formatting
+- Learn the YAML format for Disclaimer Text tab
+
+### 📊 Input Modes
+
+**Dual Input Support** for most tabs:
+- **📊 Table Mode**: Spreadsheet-like interface
+  - Add/remove rows dynamically
+  - Direct Excel paste support
+  - Columns vary by feature flag type
+- **📝 Text Mode**: Flexible text input
+  - Simple ID lists (one per line)
+  - Pipe-separated format: `ID | Account Name | Jira Ticket`
+  - Tab-separated (from Excel/Sheets)
+
+### 🎛️ Flexible Formatting Options
 
 #### Quote Styles
-- Double quotes: `"account_id"`
-- Single quotes: `'account_id'`
-- No quotes: `account_id`
+- **Double quotes**: `"account_id"`
+- **Single quotes**: `'account_id'`
+- **No quotes**: `account_id`
 
 #### Delimiters
-- Comma + Space: `"id1", "id2", "id3"`
-- Comma only: `"id1","id2","id3"`
-- Newline: Each ID on a new line with comma
-- Space only: `"id1" "id2" "id3"`
+- **Comma + Space**: `"id1", "id2", "id3"`
+- **Comma only**: `"id1","id2","id3"`
+- **Comma + Newline**: Each ID on new line with comma
+- **Newline**: Each ID on new line
+- **Space only**: `"id1" "id2" "id3"`
 
 #### Case Conversion
 - Keep original case
@@ -39,23 +93,45 @@ This tool solves the common challenge of formatting account IDs for feature flag
 - Convert to lowercase
 
 #### Additional Options
-- ✅ Remove duplicate IDs
-- ✅ Sort alphabetically
-- ✅ Add trailing comma
+- ✅ **Trailing Comma**: Add comma after last item
+- ✅ **Include Account Name Comments**: Add `# Account Name` after each ID
+- ✅ **Custom Comment Character**: Choose your comment symbol (default: #)
 
-### User-Friendly Interface
-- **Live Preview**: Formats update as you type
-- **Tab Navigation**: Switch between different feature flag categories
-- **Statistics Display**: See count of IDs per category
-- **One-Click Copy**: Copy formatted output directly to clipboard
-- **Example Templates**: Pre-loaded examples to get started quickly
+### 🔍 Duplicate Checker
+
+Dedicated tab to compare new IDs against existing repository IDs:
+- Paste new IDs to add
+- Paste existing repository IDs
+- Instantly see which IDs are duplicates
+- Identify which IDs are safe to add
+
+### 🎨 Layout Customization
+
+**Three Layout Options** to match your workflow:
+- **Top Layout**: Format options at top, inputs and outputs side-by-side
+- **Middle Layout** (Default): Three-column layout with format options in center
+- **Bottom Layout**: Inputs and outputs at top, format options at bottom
+
+Layout preference is saved automatically in your browser.
+
+### 📋 Jira Integration
+
+Automatic Jira ticket markdown generation:
+- Extract ticket IDs from input (format: AH-12345)
+- Generate markdown links for PR descriptions
+- Format: `[AH-12345](https://jira.your-domain.com/browse/AH-12345)`
+- One-click copy for easy PR creation
 
 ## 🚀 Getting Started
 
-### Quick Start
+### Online (Recommended)
+Simply visit: [https://yemobi.github.io/feature-flag-formatter/](https://yemobi.github.io/feature-flag-formatter/)
+
+### Local Installation
+
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/feature-flag-formatter.git
+   git clone https://github.com/Yemobi/feature-flag-formatter.git
    cd feature-flag-formatter
    ```
 
@@ -75,81 +151,139 @@ This is a pure HTML/CSS/JavaScript application - no build tools, no dependencies
 
 ### Basic Workflow
 
-1. **Input Your IDs**
-   - Paste account IDs into the input area (one per line or comma-separated)
-   - Optionally tag each ID with its category
+1. **Select Feature Flag Type**
+   - Click the appropriate tab (DoubleVerify, Third Party, IAS, etc.)
 
-   Example input:
-   ```
-   xx_xxxxid1 -S
-   xx_xxxxid2 -V
-   xx_xxxxid3 -B
-   tp_XXX1 -TP
-   ```
+2. **Add Resource Links** (Optional but Recommended)
+   - Click on `<Add URL here>` under the tab title
+   - Type or paste your Github repo URL
+   - Add your Confluence documentation URL
 
-2. **Configure Formatting**
-   - Select your feature flag type
-   - Choose quote style (double, single, or none)
-   - Pick your delimiter preference
+3. **Input Your IDs**
+   - **Table Mode**: 
+     - Enter data directly in table cells
+     - Use "Paste from Excel" for bulk import
+     - Click "+ Add Row" for more entries
+   - **Text Mode**:
+     - Paste IDs one per line, or
+     - Use pipe format: `t2_xxxxx | Company Name | AH-12345`
+
+4. **Configure Formatting**
+   - Choose quote style
+   - Pick delimiter preference
    - Set case conversion if needed
-   - Toggle additional options (remove duplicates, sort, trailing comma)
+   - Toggle trailing comma
+   - Enable/disable account name comments
 
-3. **Review & Copy**
-   - Check the formatted output
-   - Switch between category tabs if needed
-   - Click "Copy to Clipboard" to copy the result
-   - Paste directly into your feature flag repository
+5. **Format Output**
+   - Click "Format Output" button
+   - Review the formatted IDs in the output area
+   - Check Jira tickets for PR (if applicable)
+
+6. **Copy & Use**
+   - Click "📋 Copy IDs" to copy formatted output
+   - Click "📋 Copy Jira Links" for PR description
+   - Optionally "🔍 Check in Duplicates" before committing
 
 ### Example Use Cases
 
-#### Sustainability Feature Flag
+#### Example 1: DoubleVerify IDs
+
+**Input (Table):**
+| ID | Account Name | Jira Ticket |
+|----|--------------|-------------|
+| t2_abc123 | Nike Inc | AH-10001 |
+| t2_def456 | Adidas | AH-10002 |
+
+**Format Options:**
+- Quote: None
+- Delimiter: New Line
+- Case: lowercase
+- Comments: Unchecked
+
+**Output:**
+```
+t2_abc123
+t2_def456
+t2_ghi789
+```
+
+#### Example 2: Third Party with Comments
+
+**Input (Text):**
+```
+tp_xxx1 | Coca Cola | AH-20001
+tp_xxx2 | PepsiCo | AH-20002
+```
+
+**Format Options:**
+- Quote: Single
+- Delimiter: Comma + New Line
+- Case: lowercase
+- Trailing Comma: Checked
+- Comments: Checked
+
+**Output:**
+```
+'tp_xxx1',   # Coca Cola
+'tp_xxx2',   # PepsiCo
+```
+
+**Jira Output:**
+```
+[AH-20001](https://jira.your-domain.com/browse/AH-20001)
+[AH-20002](https://jira.your-domain.com/browse/AH-20002)
+```
+
+#### Example 3: Disclaimer Text (YAML Format)
+
 **Input:**
 ```
-account_001 -S
-account_002 -S
-account_003 -B
+t2_abc123 | Novo Nordisk - Ozempic | AH-30001
+t2_def456 | AbbVie - SKYRIZI | AH-30002
 ```
 
-**Output (with previous IDs):**
+**Output:**
 ```
-"previousid_1", "previousid_2", "previousid_3", "previousid_4",
-"account_001", "account_002", "account_003",
-```
-
-#### Third-Party Advertiser
-**Input:**
-```
-tp_XXX1
-tp_XXX2
-tp_XXX3
+  - t2_abc123   # Novo Nordisk - Ozempic
+  - t2_def456   # AbbVie - SKYRIZI
 ```
 
-**Output (uppercase, single quotes):**
+#### Example 4: IAS with API Keys
+
+**Input (Table):**
+| ID | Account Name | IAS API Key | Jira Ticket |
+|----|--------------|-------------|-------------|
+| t2_xyz789 | Amazon | IAS_KEY_abc123 | AH-40001 |
+
+**ID Output:**
 ```
-'TP_PREVIOUS1',
-'TP_PREVIOUS2',
-'TP_XXX1',
-'TP_XXX2',
-'TP_XXX3',
+t2_xyz789
 ```
 
-## 🎨 Features in Detail
+**ID:APIKey Pairs Output:**
+```
+t2_xyz789:IAS_KEY_abc123
+```
 
-### Smart ID Detection
-The tool automatically detects and parses:
-- Newline-separated IDs
-- Comma-separated IDs
-- Mixed formats
-- IDs with category tags
+## 🎨 Interface Features
 
-### Multi-Category Support
-When an ID is tagged as "Both" (`-B`), it automatically appears in both Sustainability and Viewability categories, eliminating manual duplication.
+### Visual Layout Selector
+Switch between three layout modes with intuitive icons:
+- **Top** (▭▭): Format options on top
+- **Middle** (|||): Three-column layout
+- **Bottom** (▭▭): Format options on bottom
 
-### Repository-Ready Format
-Outputs are formatted to match existing repository patterns, making it easy to:
-- Append new IDs to existing lists
-- Maintain consistent formatting across your codebase
-- Reduce manual formatting errors
+### Statistics Display
+Real-time count of:
+- Total IDs formatted
+- Number of Jira tickets found
+- Duplicate IDs detected
+
+### Responsive Design
+- Works on desktop, tablet, and mobile
+- Adapts layout for smaller screens
+- Touch-friendly controls
 
 ## 🛠️ Technical Details
 
@@ -157,6 +291,7 @@ Outputs are formatted to match existing repository patterns, making it easy to:
 - **HTML5**: Semantic structure
 - **CSS3**: Modern styling with CSS Grid and Flexbox
 - **Vanilla JavaScript**: No frameworks, pure ES6+
+- **Local Storage**: Save layout preferences
 
 ### Browser Compatibility
 - Chrome/Edge (latest)
@@ -165,9 +300,10 @@ Outputs are formatted to match existing repository patterns, making it easy to:
 - Opera (latest)
 
 ### Performance
-- Lightweight: < 50KB total
+- Lightweight: ~100KB total
 - Instant formatting: No server calls
 - Privacy-friendly: All processing happens locally in your browser
+- No tracking or analytics
 
 ## 📂 Project Structure
 
@@ -177,6 +313,7 @@ feature-flag-formatter/
 ├── styles.css          # All styling and layout
 ├── script.js           # Core functionality and logic
 ├── README.md           # This file
+├── CODE_DOCUMENTATION.md  # Technical code documentation
 └── .gitignore         # Git ignore rules
 ```
 
@@ -192,45 +329,33 @@ Contributions are welcome! Here's how you can help:
 
 ## 📝 License
 
-This project is licensed under the MIT License - see below for details:
-
-```
-MIT License
-
-Copyright (c) 2025
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+This project is licensed under the MIT License.
 
 ## 🙏 Acknowledgments
 
 - Inspired by [delim.co](https://delim.co) for data formatting
-- Built to streamline team feature flagging workflows
+- Built to streamline Reddit's feature flagging workflows
 - Designed with developer experience in mind
+- Reddit Orange branding (#FF4500)
 
 ## 📮 Support
 
 If you encounter any issues or have questions:
-- Open an issue on GitHub
+- Open an issue on GitHub: [https://github.com/Yemobi/feature-flag-formatter/issues](https://github.com/Yemobi/feature-flag-formatter/issues)
 - Check existing issues for solutions
 - Contribute improvements via pull requests
+
+## 🗺️ Roadmap
+
+Future enhancements being considered:
+- [ ] Import/Export configuration presets
+- [ ] Bulk ID validation
+- [ ] Integration with Git APIs
+- [ ] Dark mode theme
+- [ ] Custom tab creation
 
 ---
 
 **Made with ❤️ for efficient feature flag management**
+
+Reddit Orange 🧡 • Clean Code 💎 • Zero Dependencies 🚀

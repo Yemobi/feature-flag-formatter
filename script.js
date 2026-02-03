@@ -57,12 +57,14 @@ function init() {
         const caseSelect = document.getElementById(`${section}-case`);
         const trailingCommaCheckbox = document.getElementById(`${section}-trailing-comma`);
         const includeCommentsCheckbox = document.getElementById(`${section}-include-comments`);
+        const yamlPrefixCheckbox = document.getElementById(`${section}-yaml-prefix`);
         
         if (quoteSelect) quoteSelect.addEventListener('change', () => updatePlaceholderExample(section));
         if (delimiterSelect) delimiterSelect.addEventListener('change', () => updatePlaceholderExample(section));
         if (caseSelect) caseSelect.addEventListener('change', () => updatePlaceholderExample(section));
         if (trailingCommaCheckbox) trailingCommaCheckbox.addEventListener('change', () => updatePlaceholderExample(section));
         if (includeCommentsCheckbox) includeCommentsCheckbox.addEventListener('change', () => updatePlaceholderExample(section));
+        if (yamlPrefixCheckbox) yamlPrefixCheckbox.addEventListener('change', () => updatePlaceholderExample(section));
     });
     
     // Initialize placeholder examples on load
@@ -432,6 +434,7 @@ function getFormatOptions(section) {
         trailingComma: document.getElementById(`${section}-trailing-comma`)?.checked || false,
         includeComments: document.getElementById(`${section}-include-comments`)?.checked || false,
         commentChar: document.getElementById(`${section}-comment-char`)?.value || '#',
+        yamlPrefix: document.getElementById(`${section}-yaml-prefix`)?.checked || false,
         sort: false, // Sorting removed - always false
         removeDuplicates: document.getElementById(`${section}-remove-duplicates`)?.checked || false
     };
@@ -466,9 +469,6 @@ function formatData(data, options, section = '') {
     // Determine if delimiter contains comma
     const delimiterHasComma = options.delimiter.includes('comma');
     
-    // Check if this is the disclaimer section (needs YAML prefix)
-    const needsYAMLPrefix = section === 'disclaimer';
-    
     // Format each item
     const formattedItems = items.map((item, index) => {
         let formattedId = item.id;
@@ -493,8 +493,8 @@ function formatData(data, options, section = '') {
             formattedId += `   ${commentChar} ${item.name}`;
         }
         
-        // Add YAML prefix if needed (for disclaimer section)
-        if (needsYAMLPrefix) {
+        // Add YAML prefix if enabled
+        if (options.yamlPrefix) {
             formattedId = `  - ${formattedId}`;
         }
         
@@ -825,6 +825,7 @@ function updatePlaceholderExample(section) {
     const caseStyle = document.getElementById(`${section}-case`)?.value || 'none';
     const trailingComma = document.getElementById(`${section}-trailing-comma`)?.checked || false;
     const includeComments = document.getElementById(`${section}-include-comments`)?.checked || false;
+    const yamlPrefix = document.getElementById(`${section}-yaml-prefix`)?.checked || false;
     
     // Sample IDs for examples
     let sampleIds = ['t2_abc123', 't2_def456', 't2_ghi789'];
@@ -863,11 +864,8 @@ function updatePlaceholderExample(section) {
         return formattedId;
     });
     
-    // Check if YAML format (for disclaimer section)
-    const isYAML = section === 'disclaimer';
-    
-    // Add YAML prefix if needed
-    if (isYAML) {
+    // Add YAML prefix if enabled
+    if (yamlPrefix) {
         formattedIds = formattedIds.map(id => `  - ${id}`);
     }
     

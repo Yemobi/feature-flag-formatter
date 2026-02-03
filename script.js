@@ -838,40 +838,52 @@ function updatePlaceholderExample(section) {
     }
     
     // Apply quotes
-    let formattedIds = sampleIds.map(id => {
-        if (quoteStyle === 'double') return `"${id}"`;
-        if (quoteStyle === 'single') return `'${id}'`;
-        return id;
+    let formattedIds = sampleIds.map((id, index) => {
+        let formattedId = id;
+        
+        // Apply quotes
+        if (quoteStyle === 'double') {
+            formattedId = `"${formattedId}"`;
+        } else if (quoteStyle === 'single') {
+            formattedId = `'${formattedId}'`;
+        }
+        
+        // Add comma BEFORE comment (if delimiter has comma)
+        const isLastItem = index === sampleIds.length - 1;
+        const delimiterHasComma = delimiter.includes('comma');
+        if (delimiterHasComma && (!isLastItem || trailingComma)) {
+            formattedId += ',';
+        }
+        
+        // Add comment AFTER comma
+        if (includeComments) {
+            formattedId += `   # ${sampleNames[index]}`;
+        }
+        
+        return formattedId;
     });
     
     // Check if YAML format (for disclaimer section)
     const isYAML = section === 'disclaimer';
-    
-    // Add comments if enabled
-    if (includeComments) {
-        formattedIds = formattedIds.map((id, index) => {
-            return `${id}   # ${sampleNames[index]}`;
-        });
-    }
     
     // Add YAML prefix if needed
     if (isYAML) {
         formattedIds = formattedIds.map(id => `  - ${id}`);
     }
     
-    // Join with delimiter
+    // Join with delimiter (strip comma from delimiter since we already added it)
     let result;
     const delimiterHasComma = delimiter.includes('comma');
     
     switch (delimiter) {
         case 'comma-space':
-            result = formattedIds.join(', ');
+            result = delimiterHasComma ? formattedIds.join(' ') : formattedIds.join(', ');
             break;
         case 'comma-newline':
-            result = formattedIds.join(',\n');
+            result = delimiterHasComma ? formattedIds.join('\n') : formattedIds.join(',\n');
             break;
         case 'comma':
-            result = formattedIds.join(',');
+            result = delimiterHasComma ? formattedIds.join('') : formattedIds.join(',');
             break;
         case 'newline':
             result = formattedIds.join('\n');
@@ -881,11 +893,6 @@ function updatePlaceholderExample(section) {
             break;
         default:
             result = formattedIds.join(', ');
-    }
-    
-    // Add trailing comma if enabled and delimiter has comma
-    if (trailingComma && delimiterHasComma) {
-        result += ',';
     }
     
     // Update placeholder

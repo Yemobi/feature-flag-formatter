@@ -2,8 +2,6 @@
 
 A modern web-based tool designed to streamline feature flagging workflows by intelligently formatting and categorizing account IDs for repository integration.
 
-![Feature Flag ID Formatter](https://img.shields.io/badge/status-active-success.svg)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 🌐 **Live Demo**: [https://yemobi.github.io/feature-flag-formatter/](https://yemobi.github.io/feature-flag-formatter/)
 
@@ -329,30 +327,8 @@ Contributions are welcome! Here's how you can help:
 
 ## 📝 License
 
-This project is licensed under the MIT License.
 
-## 🙏 Acknowledgments
 
-- Inspired by [delim.co](https://delim.co) for data formatting
-- Built to streamline Reddit's feature flagging workflows
-- Designed with developer experience in mind
-- Reddit Orange branding (#FF4500)
-
-## 📮 Support
-
-If you encounter any issues or have questions:
-- Open an issue on GitHub: [https://github.com/Yemobi/feature-flag-formatter/issues](https://github.com/Yemobi/feature-flag-formatter/issues)
-- Check existing issues for solutions
-- Contribute improvements via pull requests
-
-## 🗺️ Roadmap
-
-Future enhancements being considered:
-- [ ] Import/Export configuration presets
-- [ ] Bulk ID validation
-- [ ] Integration with Git APIs
-- [ ] Dark mode theme
-- [ ] Custom tab creation
 
 ---
 

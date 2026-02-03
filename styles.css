@@ -192,6 +192,44 @@ header p {
     font-size: 0.95rem;
 }
 
+/* Resource Links */
+.resource-links {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.resource-links p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.resource-links strong {
+    color: var(--text-primary);
+    margin-right: 0.5rem;
+}
+
+.resource-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    background: var(--bg-color);
+    transition: all 0.2s;
+    display: inline-block;
+}
+
+.resource-link:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.resource-link:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
 /* Workflow Grid - Default Middle Layout */
 .workflow-grid {
     display: grid;

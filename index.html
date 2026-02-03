@@ -519,7 +519,7 @@
                                 <label>Delimiter</label>
                                 <select class="format-select" id="rmax-delimiter">
                                     <option value="comma-space">Comma + Space</option>
-                                    <option value="comma-newline">Comma + New Line</option>
+                                    <option value="comma-newline" selected>Comma + New Line</option>
                                     <option value="comma">Comma</option>
                                     <option value="newline">New Line</option>
                                     <option value="space">Space</option>
@@ -529,7 +529,7 @@
                             <div class="option-group">
                                 <label>Case</label>
                                 <select class="format-select" id="rmax-case">
-                                    <option value="lower">lowercase</option>
+                                    <option value="lower" selected>lowercase</option>
                                     <option value="none">Keep Original</option>
                                     <option value="upper">UPPERCASE</option>
                                 </select>
@@ -558,7 +558,7 @@
                     
                     <div class="workflow-card">
                         <h3>IDs Output</h3>
-                        <textarea class="output-area" id="rmax-output" readonly placeholder="Formatted IDs will appear here...&#10;&#10;Example output:&#10;&quot;t2_abc123&quot;, &quot;t2_def456&quot;, &quot;t2_ghi789&quot;,"></textarea>
+                        <textarea class="output-area" id="rmax-output" readonly placeholder="Formatted IDs will appear here...&#10;&#10;Example output:&#10;&quot;t2_abc123&quot;,&#10;&quot;t2_def456&quot;,&#10;&quot;t2_ghi789&quot;,"></textarea>
                         <div class="output-actions">
                             <button class="btn btn-success" onclick="copyOutput('rmax')">📋 Copy IDs</button>
                             <button class="btn btn-secondary" onclick="sendToDuplicateChecker('rmax')">🔍 Check in Duplicates</button>

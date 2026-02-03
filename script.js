@@ -48,6 +48,25 @@ function init() {
         duplicatesNewIds.addEventListener('input', () => checkDuplicates());
         duplicatesExistingIds.addEventListener('input', () => checkDuplicates());
     }
+
+    // Add event listeners for format option changes to update placeholders dynamically
+    const sections = ['doubleverify', 'third-party', 'ias', 'rmax', 'cardview', 'disclaimer'];
+    sections.forEach(section => {
+        const quoteSelect = document.getElementById(`${section}-quote`);
+        const delimiterSelect = document.getElementById(`${section}-delimiter`);
+        const caseSelect = document.getElementById(`${section}-case`);
+        const trailingCommaCheckbox = document.getElementById(`${section}-trailing-comma`);
+        const includeCommentsCheckbox = document.getElementById(`${section}-include-comments`);
+        
+        if (quoteSelect) quoteSelect.addEventListener('change', () => updatePlaceholderExample(section));
+        if (delimiterSelect) delimiterSelect.addEventListener('change', () => updatePlaceholderExample(section));
+        if (caseSelect) caseSelect.addEventListener('change', () => updatePlaceholderExample(section));
+        if (trailingCommaCheckbox) trailingCommaCheckbox.addEventListener('change', () => updatePlaceholderExample(section));
+        if (includeCommentsCheckbox) includeCommentsCheckbox.addEventListener('change', () => updatePlaceholderExample(section));
+    });
+    
+    // Initialize placeholder examples on load
+    sections.forEach(section => updatePlaceholderExample(section));
 }
 
 // Change layout mode
@@ -793,6 +812,85 @@ function sendToDuplicateChecker(section) {
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+}
+
+// Update placeholder example based on format options
+function updatePlaceholderExample(section) {
+    const outputArea = document.getElementById(`${section}-output`);
+    if (!outputArea) return;
+    
+    // Get format options
+    const quoteStyle = document.getElementById(`${section}-quote`)?.value || 'none';
+    const delimiter = document.getElementById(`${section}-delimiter`)?.value || 'comma';
+    const caseStyle = document.getElementById(`${section}-case`)?.value || 'none';
+    const trailingComma = document.getElementById(`${section}-trailing-comma`)?.checked || false;
+    const includeComments = document.getElementById(`${section}-include-comments`)?.checked || false;
+    
+    // Sample IDs for examples
+    let sampleIds = ['t2_abc123', 't2_def456', 't2_ghi789'];
+    const sampleNames = ['Company A', 'Company B', 'Company C'];
+    
+    // Apply case conversion
+    if (caseStyle === 'upper') {
+        sampleIds = sampleIds.map(id => id.toUpperCase());
+    } else if (caseStyle === 'lower') {
+        sampleIds = sampleIds.map(id => id.toLowerCase());
+    }
+    
+    // Apply quotes
+    let formattedIds = sampleIds.map(id => {
+        if (quoteStyle === 'double') return `"${id}"`;
+        if (quoteStyle === 'single') return `'${id}'`;
+        return id;
+    });
+    
+    // Check if YAML format (for disclaimer section)
+    const isYAML = section === 'disclaimer';
+    
+    // Add comments if enabled
+    if (includeComments) {
+        formattedIds = formattedIds.map((id, index) => {
+            return `${id}   # ${sampleNames[index]}`;
+        });
+    }
+    
+    // Add YAML prefix if needed
+    if (isYAML) {
+        formattedIds = formattedIds.map(id => `  - ${id}`);
+    }
+    
+    // Join with delimiter
+    let result;
+    const delimiterHasComma = delimiter.includes('comma');
+    
+    switch (delimiter) {
+        case 'comma-space':
+            result = formattedIds.join(', ');
+            break;
+        case 'comma-newline':
+            result = formattedIds.join(',\n');
+            break;
+        case 'comma':
+            result = formattedIds.join(',');
+            break;
+        case 'newline':
+            result = formattedIds.join('\n');
+            break;
+        case 'space':
+            result = formattedIds.join(' ');
+            break;
+        default:
+            result = formattedIds.join(', ');
+    }
+    
+    // Add trailing comma if enabled and delimiter has comma
+    if (trailingComma && delimiterHasComma) {
+        result += ',';
+    }
+    
+    // Update placeholder
+    const placeholderText = `Formatted IDs will appear here...\n\nExample output:\n${result}`;
+    outputArea.placeholder = placeholderText;
 }
 
 // Show notification
